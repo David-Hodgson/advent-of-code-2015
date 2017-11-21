@@ -19,4 +19,24 @@ func main() {
 	fmt.Printf("Ups: %v", ups)
 	fmt.Printf("Downs: %v", downs)
 	fmt.Printf("Final: %v", total)
+
+	currentFloor := 0
+	pos := 0
+
+	for i := 0; i < len(input); i++ {
+	
+		if input[i:i+1] == "(" {
+			currentFloor++
+		}
+
+		if input[i:i+1] == ")" {
+			currentFloor--
+		}
+		if currentFloor == -1 {
+			pos = i
+			break
+		}	
+	}
+
+	fmt.Printf("Poss: %v", pos)
 }
