@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func main() {
+func DayOne() {
 	var input = ReadFile("day1-input.txt")
 
 	fmt.Println(input)
