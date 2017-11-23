@@ -19,6 +19,17 @@ func calculatePaperRequired(l,w,h int) int {
 	return paperRequired
 }
 
+func calculateRibbonRequired(l,w,h int) int{
+
+	sides := [] int {l,w,h}
+	sort.Ints(sides)
+	
+	ribbonRequired := sides[0]*2 + sides[1] * 2
+	ribbonRequired += l*w*h
+
+	return ribbonRequired
+}
+
 func DayTwoPartOne() {
 
 	input := ReadFile("day2-input.txt")
@@ -30,13 +41,13 @@ func DayTwoPartOne() {
 	for i := 0; i<len(presents); i++ {
 		if len(strings.Trim(presents[i], " ")) > 0 {
 
-			dimensions := strings.Split(presents[i],"x")
+			dimensions := strings.Split(strings.Trim(presents[i],"\r"),"x")
 		
 			l,err := strconv.Atoi(dimensions[0])
 			w,err := strconv.Atoi(dimensions[1])
 			h,err := strconv.Atoi(dimensions[2])
 			if err != nil {
-				fmt.Println("error")
+				fmt.Println("error", err)
 			}
 	
 			fmt.Println(dimensions)
@@ -46,4 +57,34 @@ func DayTwoPartOne() {
 	}
 
 	fmt.Println("Total Paper: ", totalPaper)
+}
+
+func DayTwoPartTwo() {
+
+
+	input := ReadFile("day2-input.txt")
+
+	presents := strings.Split(input, "\n")
+
+	totalRibbon := 0
+
+	for i := 0; i<len(presents); i++ {
+		if len(strings.Trim(presents[i], " ")) > 0 {
+
+			dimensions := strings.Split(strings.Trim(presents[i],"\r"),"x")
+		
+			l,err := strconv.Atoi(dimensions[0])
+			w,err := strconv.Atoi(dimensions[1])
+			h,err := strconv.Atoi(dimensions[2])
+			if err != nil {
+				fmt.Println("error", err)
+			}
+	
+			fmt.Println(dimensions)
+			fmt.Println(calculatePaperRequired(l,w,h))
+			totalRibbon += calculateRibbonRequired(l,w,h)		
+		}
+	}
+
+	fmt.Println("Total Ribbon: ", totalRibbon)
 }
