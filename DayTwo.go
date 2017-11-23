@@ -2,30 +2,29 @@ package adventofcode2015
 
 import (
 	"fmt"
-	"strings"
-	"strconv"
 	"sort"
+	"strconv"
+	"strings"
 )
 
+func calculatePaperRequired(l, w, h int) int {
 
-func calculatePaperRequired(l,w,h int) int {
-	
 	paperRequired := 2*l*w + 2*w*h + 2*h*l
 
-	sides := [] int {l,w,h}	
+	sides := []int{l, w, h}
 	sort.Ints(sides)
 
-	paperRequired += sides[0]*sides[1]
+	paperRequired += sides[0] * sides[1]
 	return paperRequired
 }
 
-func calculateRibbonRequired(l,w,h int) int{
+func calculateRibbonRequired(l, w, h int) int {
 
-	sides := [] int {l,w,h}
+	sides := []int{l, w, h}
 	sort.Ints(sides)
-	
-	ribbonRequired := sides[0]*2 + sides[1] * 2
-	ribbonRequired += l*w*h
+
+	ribbonRequired := sides[0]*2 + sides[1]*2
+	ribbonRequired += l * w * h
 
 	return ribbonRequired
 }
@@ -38,21 +37,19 @@ func DayTwoPartOne() {
 
 	totalPaper := 0
 
-	for i := 0; i<len(presents); i++ {
+	for i := 0; i < len(presents); i++ {
 		if len(strings.Trim(presents[i], " ")) > 0 {
 
-			dimensions := strings.Split(strings.Trim(presents[i],"\r"),"x")
-		
-			l,err := strconv.Atoi(dimensions[0])
-			w,err := strconv.Atoi(dimensions[1])
-			h,err := strconv.Atoi(dimensions[2])
+			dimensions := strings.Split(strings.Trim(presents[i], "\r"), "x")
+
+			l, err := strconv.Atoi(dimensions[0])
+			w, err := strconv.Atoi(dimensions[1])
+			h, err := strconv.Atoi(dimensions[2])
 			if err != nil {
 				fmt.Println("error", err)
 			}
-	
-			fmt.Println(dimensions)
-			fmt.Println(calculatePaperRequired(l,w,h))
-			totalPaper += calculatePaperRequired(l,w,h)		
+
+			totalPaper += calculatePaperRequired(l, w, h)
 		}
 	}
 
@@ -61,28 +58,25 @@ func DayTwoPartOne() {
 
 func DayTwoPartTwo() {
 
-
 	input := ReadFile("day2-input.txt")
 
 	presents := strings.Split(input, "\n")
 
 	totalRibbon := 0
 
-	for i := 0; i<len(presents); i++ {
+	for i := 0; i < len(presents); i++ {
 		if len(strings.Trim(presents[i], " ")) > 0 {
 
-			dimensions := strings.Split(strings.Trim(presents[i],"\r"),"x")
-		
-			l,err := strconv.Atoi(dimensions[0])
-			w,err := strconv.Atoi(dimensions[1])
-			h,err := strconv.Atoi(dimensions[2])
+			dimensions := strings.Split(strings.Trim(presents[i], "\r"), "x")
+
+			l, err := strconv.Atoi(dimensions[0])
+			w, err := strconv.Atoi(dimensions[1])
+			h, err := strconv.Atoi(dimensions[2])
 			if err != nil {
 				fmt.Println("error", err)
 			}
-	
-			fmt.Println(dimensions)
-			fmt.Println(calculatePaperRequired(l,w,h))
-			totalRibbon += calculateRibbonRequired(l,w,h)		
+
+			totalRibbon += calculateRibbonRequired(l, w, h)
 		}
 	}
 
