@@ -29,3 +29,29 @@ func DayFourPartOne() {
 		value++
 	}
 }
+
+
+
+func DayFourPartTwo() {
+
+	input := "ckczppom"
+	found := false
+	value := 0
+
+	for ; !found; {
+
+		key := fmt.Sprintf("%s%d",input,value)
+		hasher := md5.New()
+		hasher.Write([]byte(key))
+		firstSix := fmt.Sprintf("%x",hasher.Sum(nil))[0:6]
+
+		if firstSix == "000000" {
+			found = true
+			fmt.Println(key)	
+		}
+
+		value++
+	}
+}
+
+
