@@ -2,6 +2,9 @@ package adventofcode2015
 
 import (
 	"fmt"
+	"strings"
+	"strconv"
+
 )
 
 func setPixel(grid [][]bool, x,y int, state bool) {
@@ -12,12 +15,29 @@ func togglePixel(grid [][]bool, x,y int) {
 	grid[y][x] = !grid[y][x]
 }
 
-func turnPixelOn(grid [][]bool, x,y int, state bool) {
+func turnPixelOn(grid [][]bool, x,y int) {
 	setPixel(grid,x,y,true)
 }
 
-func turnPixelOff(grid [][]bool, x,y int, state bool) {
+func turnPixelOff(grid [][]bool, x,y int) {
 	setPixel(grid,x,y,false)
+}
+
+
+
+func countLitPixels(grid [][]bool) int {
+	count := 0
+
+	for i :=0 ; i< len(grid); i++ {
+		for j :=0 ; j <len(grid[i]); j++ {
+
+			if grid[i][j] {
+				count++	
+			}
+		}
+	}
+
+	return count
 }
 
 func showGrid(grid [][]bool) {
@@ -36,10 +56,24 @@ func showGrid(grid [][]bool) {
 	}
 }
 
+func parsePoints(command string) (minX,minY,maxX,maxY int) {
+
+	parts := strings.Split(command, " ")
+	topLeft := strings.Split(parts[0], ",")
+	bottomRight := strings.Split(parts[2], ",")
+
+	minX,_ = strconv.Atoi(topLeft[0])
+	minY,_ = strconv.Atoi(topLeft[1])
+	maxX,_ = strconv.Atoi(bottomRight[0])
+	maxY,_ = strconv.Atoi(bottomRight[1])
+
+	return minX,minY,maxX,maxY
+}
+
 func DaySixPartOne() {
 
-	const gridWidth = 10
-	const gridHeight = 10
+	const gridWidth = 1000
+	const gridHeight = 1000
 
 	fmt.Println("Day Six")
 
@@ -55,8 +89,56 @@ func DaySixPartOne() {
 	}
 
 	//grid[9][5] = true
-	setPixel(grid,5,9,true)
-	fmt.Println("grid size: ", len(grid))
+	//setPixel(grid,5,9,true)
+	//fmt.Println("grid size: ", len(grid))
 
-	showGrid(grid)
+	//showGrid(grid)
+
+	input := ReadFile("day6-input.txt")
+
+	steps := strings.Split(input, "\n")
+
+	for i := 0; i< len(steps); i++ {
+
+		step := steps[i]
+
+		//fmt.Println(step)
+	
+		if strings.HasPrefix(step,"toggle") {
+			toggle := step[len("toggle "):]
+			minX,minY,maxX,maxY := parsePoints(toggle)
+			for  y := minY ; y<=maxY ; y++ {
+				for x := minX ; x <= maxX ; x++ {
+					togglePixel(grid,x,y)
+				}
+			}
+		}
+
+		if strings.HasPrefix(step,"turn on") {
+			toggle := step[len("turn on "):]
+			minX,minY,maxX,maxY := parsePoints(toggle)
+			for  y := minY ; y<=maxY ; y++ {
+				for x := minX ; x <= maxX ; x++ {
+					turnPixelOn(grid,x,y)
+				}
+			}
+		}
+
+		if strings.HasPrefix(step,"turn off") {
+			toggle := step[len("turn off "):]
+			minX,minY,maxX,maxY := parsePoints(toggle)
+			for  y := minY ; y<=maxY ; y++ {
+				for x := minX ; x <= maxX ; x++ {
+					turnPixelOff(grid,x,y)
+				}
+			}
+		}
+
+
+
+
+	}
+
+	//showGrid(grid)
+	fmt.Println("Lit pixels: ", countLitPixels(grid))
 }
