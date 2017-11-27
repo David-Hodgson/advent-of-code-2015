@@ -6,30 +6,45 @@ import (
 	"strings"
 )
 
-func DayFivePartOne() {
+func isSentenceNice(sentence string) bool {
 
-	input := "ugknbfddgicrmopn"
-
-	fmt.Println(input)
-
-
-	threeVowels,_ := regexp.Match(`([aeiou]\w*){3}`,[]byte(input));
-	doubleletters,err := regexp.Match(`(.)\1`,[]byte(input)); 
-	nodisallowed := true 
-
-	if strings.Contains(input,"ab") || strings.Contains(input,"cd") || strings.Contains(input,"pq") || strings.Contains(input,"xy") {
+	nodisallowed := true
+	if strings.Contains(sentence,"ab") || strings.Contains(sentence,"cd") || strings.Contains(sentence,"pq") || strings.Contains(sentence,"xy") {
 		nodisallowed = false
 	}
 
+	threeVowels := false
+	doubleletters := false
 
-	fmt.Println(err)
-	
-	regex,err := regexp.Compile(`(.)\1`)
-	fmt.Println(err)	
-	fmt.Println(regex)	
-	fmt.Println(threeVowels)
-	fmt.Println(doubleletters)
-	fmt.Println(nodisallowed)
+	if nodisallowed {
+		threeVowels, _ = regexp.Match(`([aeiou]\w*){3}`, []byte(sentence));
 
+		for i := 0; i<len(sentence)-1;i++ {
 
+			if (sentence[i] == sentence[i+1]) {
+				doubleletters = true
+			}
+		}
+	}
+
+	return threeVowels && doubleletters && nodisallowed
+}
+
+func DayFivePartOne() {
+
+	input := ReadFile("day5-input.txt")
+
+	sentences := strings.Split(input, "\n")
+
+	niceCount := 0
+
+	for i := 0; i<len(sentences); i++ {
+
+		if isSentenceNice(sentences[i]) {
+			niceCount++
+		}
+
+	}
+
+	fmt.Println("Nice Sentences: ",niceCount)
 }
