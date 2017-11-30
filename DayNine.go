@@ -48,18 +48,27 @@ func DayNineExample() {
 		localdestinations = append(localdestinations, value)
 	}
 
-	distance = calculateDistanceToAllDestinations(localdestinations, routes, distance)
+	for i :=0 ; i< len(localdestinations); i++ {
+
+
+		distance = calculateDistanceToAllDestinations(localdestinations[i], localdestinations, routes, distance)
+	}
 
 	fmt.Println(distance)
 }
 
 
-func calculateDistanceToAllDestinations(destinations []string, distanceMap map[Route]int, currentDistance int ) int {
+func calculateDistanceToAllDestinations(startPoint string, destinations []string, distanceMap map[Route]int, currentDistance int ) int {
+
+	fmt.Println("Starting at", startPoint)
 
 	for i := 0 ; i <len(destinations); i++ {
 
-		fmt.Println("Calculating ", destinations[i])
+		fmt.Println("Calculating distance to", destinations[i])
 
+		//TODO distance could be either way
+		fmt.Println("Distance:", distanceMap[Route{startPoint, destinations[i]}])
+		
 		var localdestinations = []string {}
 
 		for value := range destinations {
