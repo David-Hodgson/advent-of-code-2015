@@ -68,7 +68,7 @@ func calculateDistanceToAllDestinations(startPoint string, destinations []string
 
 		//TODO distance could be either way
 		fmt.Println("Distance:", distanceMap[Route{startPoint, destinations[i]}])
-		
+
 		var localdestinations = []string {}
 
 		for value := range destinations {
