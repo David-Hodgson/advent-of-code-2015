@@ -36,51 +36,162 @@ func DayNineExample() {
 		fmt.Println(startPoint, endPoint, distance)
 
 		routes[Route{startPoint, endPoint}] = distance
+		routes[Route{endPoint, startPoint}] = distance
 	}
 
 	fmt.Println(destinations)
 	fmt.Println(routes)
 
-	distance := 0
-	var localdestinations = []string {}
+	routesCombos :=	generateRoutes(destinations)
 
-	for value,_ := range destinations {
-		localdestinations = append(localdestinations, value)
+	for j := 0 ; j < len(routesCombos) ; j++ {
+
+		fmt.Println(routesCombos[j])
+		fmt.Println(getRouteLength(routesCombos[j], routes))
 	}
-
-	for i :=0 ; i< len(localdestinations); i++ {
-
-
-		distance = calculateDistanceToAllDestinations(localdestinations[i], localdestinations, routes, distance)
-	}
-
-	fmt.Println(distance)
 }
 
+func DayNinePartOne() {
 
-func calculateDistanceToAllDestinations(startPoint string, destinations []string, distanceMap map[Route]int, currentDistance int ) int {
+	fmt.Println("Day Nine - Part One")
 
-	fmt.Println("Starting at", startPoint)
+	input := ReadFile("day9-input.txt")
 
-	for i := 0 ; i <len(destinations); i++ {
+	routeStrings := strings.Split(input, "\n")
 
-		fmt.Println("Calculating distance to", destinations[i])
+	destinations := make(map[string]bool)
+	routes := make(map[Route]int)
 
-		//TODO distance could be either way
-		fmt.Println("Distance:", distanceMap[Route{startPoint, destinations[i]}])
+	for i :=0 ; i< len(routeStrings) ; i++ {
 
-		var localdestinations = []string {}
+		parts := strings.Split(routeStrings[i], " ")
 
-		for value := range destinations {
-			if destinations[value] != destinations[i] {
-				localdestinations = append(localdestinations, destinations[value])
+		startPoint := parts[0]
+		endPoint := parts[2]
+		distance,_ := strconv.Atoi(parts[4])
+
+		destinations[startPoint] = true
+		destinations[endPoint] = true
+
+		routes[Route{startPoint, endPoint}] = distance
+		routes[Route{endPoint, startPoint}] = distance
+	}
+
+	fmt.Println(destinations)
+	fmt.Println(routes)
+
+	routesCombos :=	generateRoutes(destinations)
+
+	minDistance := -1
+	for j := 0 ; j < len(routesCombos) ; j++ {
+
+		dist := getRouteLength(routesCombos[j], routes)
+
+		if dist < minDistance || minDistance == -1 {
+			minDistance = dist
+		}
+	}
+
+	fmt.Println("Minimum Distance:", minDistance)
+}
+
+func DayNinePartTwo() {
+
+	fmt.Println("Day Nine - Part Two")
+
+	input := ReadFile("day9-input.txt")
+
+	routeStrings := strings.Split(input, "\n")
+
+	destinations := make(map[string]bool)
+	routes := make(map[Route]int)
+
+	for i :=0 ; i< len(routeStrings) ; i++ {
+
+		parts := strings.Split(routeStrings[i], " ")
+
+		startPoint := parts[0]
+		endPoint := parts[2]
+		distance,_ := strconv.Atoi(parts[4])
+
+		destinations[startPoint] = true
+		destinations[endPoint] = true
+
+		routes[Route{startPoint, endPoint}] = distance
+		routes[Route{endPoint, startPoint}] = distance
+	}
+
+	fmt.Println(destinations)
+	fmt.Println(routes)
+
+	routesCombos :=	generateRoutes(destinations)
+
+	minDistance := -1
+	maxDistance := 0
+	for j := 0 ; j < len(routesCombos) ; j++ {
+
+		dist := getRouteLength(routesCombos[j], routes)
+
+		if dist < minDistance || minDistance == -1 {
+			minDistance = dist
+		}
+
+		if dist > maxDistance {
+			maxDistance = dist
+		}
+	}
+
+	fmt.Println("Minimum Distance:", minDistance)
+	fmt.Println("Maximum Distance:", maxDistance)
+}
+
+func getRouteLength(route []string, distanceMap map[Route]int) int {
+
+	distance := 0
+
+	for i := 0; i < len(route) -1; i++ {
+
+		route := Route{route[i], route[i+1]}
+
+		distance += distanceMap[route]
+	}
+	return distance
+}
+
+func generateRoutes(destinations map[string]bool) [][]string {
+
+	var routes [][]string 
+	for destination,_ := range destinations {
+
+		remainingDests := make(map[string]bool)
+
+		for otherDest,_ := range destinations {
+			if otherDest != destination {
+				remainingDests[otherDest] = true
 			}
 		}
 
-		fmt.Println(localdestinations)
+		if len(remainingDests) > 0 {
+
+			//Keep tracking
+			otherRoutes := generateRoutes(remainingDests)
+
+			for i := 0 ; i < len(otherRoutes) ; i++ {
+
+				var currentRoute []string
+				currentRoute = append(currentRoute, destination)
+				currentRoute = append(currentRoute, otherRoutes[i]...)
+				routes = append(routes,currentRoute)
+			}
+		} else {
+			var currentRoute []string
+			currentRoute = append(currentRoute, destination)
+			routes = append(routes,currentRoute)
+		}
+
 	}
 
-	return 0;
+	return routes 
 }
 
 
