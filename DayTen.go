@@ -57,3 +57,17 @@ func DayTenPartOne() {
 
 	fmt.Println("Output:", len(input))
 }
+
+
+func DayTenPartTwo() {
+
+	fmt.Println("Day 10 - Part Two")
+
+	input := "1113122113"
+
+	for i := 0 ;i < 50; i++ {
+		input = lookAndSay(input) 
+	}
+
+	fmt.Println("Output:", len(input))
+}
