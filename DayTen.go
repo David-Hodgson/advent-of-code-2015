@@ -60,6 +60,7 @@ func DayTenPartOne() {
 }
 
 type element struct {
+	number int
 	name string
 	pattern string
 }
@@ -70,98 +71,63 @@ func DayTenPartTwo() {
 	fmt.Println("Day 10 - Part Two")
 
 	input := "1113122113"
-	input = "13112221133211322112211213322112"
-	elementFile := ReadFile("day10-elements.txt")
-	elementFileList := strings.Split(elementFile, "\n")
+	//input = "13112221133211322112211213322112"
 
-	elementList := make([]element,len(elementFileList)) 
+	fmt.Println(input)
+	elementFile := strings.Split(ReadFile("day10-elements.txt"),"\n")
 
-	for j := 0 ; j < len(elementFileList) ; j++ {
-		elementParts := strings.Split(elementFileList[j], "\t")
-		elementList[j] = element{elementParts[2],elementParts[3]}
+	elementList := make([]element, len(elementFile)+1)
+
+	for i := 0 ; i < len(elementFile) ; i++ {
+
+		elementParts := strings.Split(elementFile[i], "\t")
+		elementNumber,_ := strconv.Atoi(elementParts[1])
+		elementName := elementParts[2]
+		elementPattern := elementParts[3]
+
+		elementList[elementNumber] = element{elementNumber,elementName,elementPattern}
 	}
 
-	elementPatternMap := make(map[string]element)
-	elementNameMap := make(map[string]element)
-	namePosMap := make(map[string]int)
-	patternPosMap := make(map[string]int)
+	fmt.Println(elementList)
 
-	for indx,element := range elementList {
-		fmt.Println("indx:", indx)
+	//TODO parse elementList to build next elements
 
-		elementPatternMap[element.pattern] = element
-		elementNameMap[element.name] = element
+	//for each element
+		// look at next pattern
+		// if simple next is next elment
+		// else next is a list of elements including the next one
 
-		namePosMap[element.name] = indx
-		patternPosMap[element.pattern] = indx
-	}
-
-	fmt.Println("Pattern Map", elementPatternMap)
-	fmt.Println("elementNameMap", elementNameMap)
-	fmt.Println("namePosMap", namePosMap)
-	fmt.Println("patternPosMap", patternPosMap)
-
-	startPos := patternPosMap[input]
-
-	fmt.Println("startPos:", startPos)
-
-	output := ""
-	stepCount := 2 
-	for i := 0 ; i < stepCount; i++ {
-		startPos++
-		pattern := ""
-		if startPos >= len(elementList) {
-			pattern = "22"
-		} else {
-			nextElement := elementList[startPos]
-			pattern = nextElement.pattern
-		}
-
-		patternParts := strings.Split(pattern, ".")
-
-		output = ""
-
-		for j := 0; j<len(patternParts) ; j++ {
-			fmt.Println(patternParts[j])
-			if _,exists := elementNameMap[patternParts[j]];exists {
-				output += processGroup(patternParts[j], stepCount-i, elementNameMap, namePosMap, elementList)
-			} else {
-				output += patternParts[j]
-			}
-		}
-	}
-	fmt.Println("Output:", len(output))
+	//TODO method to work through next states
 }
 
-func processGroup(name string, steps int, elementNameMap map[string]element, namePosMap map[string]int, elementList []element) string {
+func getNextState(input string, elementPatternMap, elementNameMap map[string]element, patternPosMap map[string]int, elementList []element) string {
 
-	startPos := namePosMap[name]
+	currentElement := elementPatternMap[input]
+	currentPos := patternPosMap[input]
 
-	fmt.Println("process Group start Pos:", startPos)
-	output := ""
-	for i := 0 ; i < steps; i++ {
-		startPos++
-		if startPos >= len(elementList) {
-			startPos = len(elementList) -1
-		}
-		nextElement := elementList[startPos]
+	fmt.Println(currentElement)
+	fmt.Println(currentPos)
 
-		patternParts := strings.Split(nextElement.pattern, ".")
+	if currentPos >= len(elementList) {
+		fmt.Println("Last Element")
+	} else {
+		nextElement := elementList[currentPos+1]
 
-		output = ""
+		nextElementGroups := strings.Split(nextElement.pattern, ".")
 
-		for j := 0; j<len(patternParts) ; j++ {
-			fmt.Println(patternParts[j])
-			if _,exists := elementNameMap[patternParts[j]];exists {
-				fmt.Println("Name does not exist")
-				output += processGroup(patternParts[j], steps-i, elementNameMap, namePosMap, elementList)
+		output := ""
+
+		for i := 0 ; i < len(nextElementGroups); i++ {
+			groupPattern := nextElementGroups[i]
+			output += "."
+			if otherElement, exists := elementNameMap[groupPattern]; exists {
+				output += otherElement.pattern
 			} else {
-				fmt.Println("Name does exist")
-				output += patternParts[j]
+				output += groupPattern
 			}
-		}
-		fmt.Println(output)
 
+		}
+		return output 
 	}
-	return output
+	return input
 }
