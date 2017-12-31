@@ -108,11 +108,27 @@ func DayElevenPartOne() {
 	for ; ; {
 
 		currentPassword = generateNextPassword(currentPassword)
-		fmt.Println(currentPassword)
 		if isValidPassword(currentPassword) {
 			break
 		}
 	}
 
 	fmt.Println("New Password:", currentPassword)
+}
+
+func DayElevenPartTwo() {
+
+	fmt.Println("Day 11 - Part Two")
+
+	updatedPassword := "hxbxxyzz"
+
+	for ;; {
+		updatedPassword = generateNextPassword(updatedPassword)
+		if isValidPassword(updatedPassword) {
+			break
+		}
+	}
+
+	fmt.Println("Another New Password:", updatedPassword)
+
 }
