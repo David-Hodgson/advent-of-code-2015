@@ -43,6 +43,14 @@ func DayTwelvePartOne() {
 	fmt.Println("Total:", countJsonNumbers(input))
 }
 
+func DayTwelvePartTwo() {
+
+	fmt.Println("Day 12 - Part Two")
+	input := ReadFile("day12-input.txt")
+
+	fmt.Println("Total:", countJsonNumbersExcludeRed(input))
+}
+
 const START = 0
 const STRING = 1
 const OBJECT = 2
@@ -57,12 +65,8 @@ func countJsonNumbers(json string) int {
 	stateStack := make([]int,0)
 	stateStack = append(stateStack, currentState)
 
-	//To Complicated - just need to look for values containers
-	// [ or :, once in a value , look for a closer or seperator
-	// ] or , for arrays or , or } for objects
-
 	value := ""
-	fmt.Println(value)
+
 	for i :=0 ; i<len(json) ; i++ {
 
 		currentChar := json[i]
@@ -125,9 +129,110 @@ func countJsonNumbers(json string) int {
 	return count
 }
 
+type excludableCount struct {
+	exclude bool
+	count int
+}
+
+func countJsonNumbersExcludeRed(json string) int {
+
+	currentState := START
+
+	stateStack := make([]int,0)
+	stateStack = append(stateStack, currentState)
+
+	countStack := make([]excludableCount,0)
+	countStack = append(countStack, excludableCount{false,0})
+
+	value := ""
+
+	for i :=0 ; i<len(json) ; i++ {
+
+		currentChar := json[i]
+
+		switch currentState{
+			case ARRAY:
+				switch currentChar{
+					case ']':
+						countStack[len(countStack)-1].count += getIntFromString(value)
+						value = ""
+						currentState = stateStack[len(stateStack)-1]
+						stateStack = stateStack[:len(stateStack)-1]
+						countStack[len(countStack)-2].count += countStack[len(countStack)-1].count
+						countStack = countStack[:len(countStack)-1]
+					case ',':
+						countStack[len(countStack)-1].count += getIntFromString(value)
+						value = ""
+					case '[':
+						stateStack = append(stateStack, currentState)
+
+						countStack = append(countStack, excludableCount{false,0})
+						currentState = ARRAY
+					case '{':
+						stateStack = append(stateStack, currentState)
+						currentState = OBJECT
+						countStack = append(countStack, excludableCount{false,0})
+					default:
+						value += string(currentChar)
+				}
+			case OBJECT:
+				switch currentChar {
+					case '}':
+						if value == "\"red\"" {
+							countStack[len(stateStack)-1].exclude = true
+						}
+						countStack[len(countStack)-1].count += getIntFromString(value)
+						value = ""
+						currentState = stateStack[len(stateStack)-1]
+						stateStack = stateStack[:len(stateStack)-1]
+
+						if !countStack[len(countStack)-1].exclude {
+							countStack[len(countStack)-2].count += countStack[len(countStack)-1].count
+						}
+						countStack = countStack[:len(countStack)-1]
+					case ',':
+
+						if value == "\"red\"" {
+							countStack[len(stateStack)-1].exclude = true
+						}
+						countStack[len(countStack)-1].count += getIntFromString(value)
+						value = ""
+					case ':' :
+						value = ""
+					case '{' :
+						stateStack = append(stateStack, currentState)
+						currentState = OBJECT
+						countStack = append(countStack, excludableCount{false,0})
+					case '[' :
+						stateStack = append(stateStack, currentState)
+						currentState = ARRAY
+
+						countStack = append(countStack, excludableCount{false,0})
+					default:
+						value += string(currentChar)
+				}
+			case START:
+				switch currentChar {
+					case '{':
+						stateStack = append(stateStack, currentState)
+						currentState = OBJECT
+						value = ""
+						countStack = append(countStack, excludableCount{false,0})
+					case '[':
+						stateStack = append(stateStack, currentState)
+						currentState = ARRAY
+						countStack = append(countStack, excludableCount{false,0})
+						value = ""
+				}
+
+		}
+	}
+
+	return countStack[0].count
+}
+
 func getIntFromString(input string) int {
 
-	fmt.Println("Value to extract int from:", input)
 	if value,err := strconv.Atoi(input) ; err == nil {
 		return value
 	}
