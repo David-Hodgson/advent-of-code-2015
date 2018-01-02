@@ -135,3 +135,38 @@ func DayThirteenPartOne() {
 
 	fmt.Println("Score:", score)
 }
+
+
+func DayThirteenPartTwo() {
+
+	fmt.Println("Day 13 - Part Two")
+
+	input := ReadFile("day13-input.txt")
+	happinessMap := parseHappinessMap(input)
+
+	people := make([]string,0)
+
+	meMap := make(map[string]int)
+
+	for key,_ := range happinessMap {
+		people = append(people, key)
+		meMap[key] = 0
+	}
+
+	people = append(people,"me")
+	happinessMap["me"] = meMap
+
+	combinations := getListPermutations(people)
+
+	score := 0
+
+	for i:=0; i<len(combinations); i++ {
+		newScore := getHappinessScoreForList(combinations[i], happinessMap)
+		if newScore > score {
+			score = newScore
+		}
+
+	}
+
+	fmt.Println("Score:", score)
+}
