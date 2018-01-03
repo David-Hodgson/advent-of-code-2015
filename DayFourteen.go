@@ -90,3 +90,35 @@ func DayFourteenPartOne() {
 	fmt.Println("Max Distance:", maxDistance)
 
 }
+
+func DayFourteenPartTwo() {
+
+	fmt.Println("Day 14 - Part 2")
+
+	input := ReadFile("day14-input.txt")
+	reindeerStats := strings.Split(input, "\n")
+
+	time := 2503
+
+	scoreMap := make(map[string]int)
+	for x := 1; x <= time; x++ {
+		maxTimeDistance := 0
+		maxDeerName := make([]string, 0)
+		for i := 0; i < len(reindeerStats); i++ {
+			stats := parseReindeerStats(reindeerStats[i])
+			deerDistance := getDistanceForTime(stats, x)
+			if deerDistance > maxTimeDistance {
+				maxTimeDistance = deerDistance
+				maxDeerName = []string{stats.name}
+			} else if deerDistance == maxTimeDistance {
+				maxDeerName = append(maxDeerName, stats.name)
+			}
+		}
+
+		for j := 0; j < len(maxDeerName); j++ {
+			scoreMap[maxDeerName[j]] = scoreMap[maxDeerName[j]] + 1
+		}
+	}
+
+	fmt.Println(scoreMap)
+}
