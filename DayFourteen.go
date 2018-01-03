@@ -2,12 +2,12 @@ package adventofcode2015
 
 import (
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 type deerStats struct {
-	name string
+	name                           string
 	speed, flyingTime, restingTime int
 }
 
@@ -20,7 +20,7 @@ func parseReindeerStats(reindeerStats string) deerStats {
 	flyingTime, _ := strconv.Atoi(statParts[6])
 	restingTime, _ := strconv.Atoi(statParts[13])
 
-	return deerStats{name,speed,flyingTime,restingTime}
+	return deerStats{name, speed, flyingTime, restingTime}
 }
 
 func getDistanceForTime(stats deerStats, time int) int {
@@ -63,7 +63,7 @@ func DayFourteenExample() {
 		}
 	}
 
-	fmt.Println("Max Distance:",maxDistance)
+	fmt.Println("Max Distance:", maxDistance)
 
 }
 
@@ -87,6 +87,6 @@ func DayFourteenPartOne() {
 		}
 	}
 
-	fmt.Println("Max Distance:",maxDistance)
+	fmt.Println("Max Distance:", maxDistance)
 
 }
