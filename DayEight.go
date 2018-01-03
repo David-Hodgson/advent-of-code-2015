@@ -1,16 +1,16 @@
 package adventofcode2015
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
-	"bytes"
 )
 
 func getStringLengths(input string) (memoryLength, codeLength int) {
 
 	codeLength = len(input)
 	count := 0
-	for i :=1 ; i< len(input)-1 ; i++ {
+	for i := 1; i < len(input)-1; i++ {
 
 		if input[i] == '\\' {
 
@@ -20,9 +20,9 @@ func getStringLengths(input string) (memoryLength, codeLength int) {
 			} else if input[i+1] == '"' {
 				count++
 				i++
-			} else if input[i+1]  == 'x' {
+			} else if input[i+1] == 'x' {
 				count++
-				i = i+3
+				i = i + 3
 			}
 		} else {
 			count++
@@ -36,7 +36,7 @@ func getStringLengths(input string) (memoryLength, codeLength int) {
 	//fmt.Println("Memory Size:", memoryLength)
 	//fmt.Println("Code Size:", codeLength)
 
-	return memoryLength,codeLength
+	return memoryLength, codeLength
 }
 
 func encodeString(input string) string {
@@ -46,7 +46,7 @@ func encodeString(input string) string {
 	var str bytes.Buffer
 
 	str.WriteString("\"")
-	for i := 0; i < len(input) ; i++ {
+	for i := 0; i < len(input); i++ {
 
 		if input[i] == '"' {
 			str.WriteString("\\\"")
@@ -79,7 +79,6 @@ func DayEightExample() {
 	fmt.Println("Memory Length:", memLength)
 	fmt.Println("Code Length:", codeLength)
 
-
 	e3 := "\"aaa\\\"aaa\""
 
 	memLength, codeLength = getStringLengths(e3)
@@ -104,7 +103,7 @@ func DayEightExample2() {
 	e3 := "\"aaa\\\"aaa\""
 	e4 := "\"\\x27\""
 
-	stringList := []string {e1,e2,e3,e4}
+	stringList := []string{e1, e2, e3, e4}
 
 	originalMemoryCount := 0
 	orginalCodeCount := 0
@@ -112,7 +111,7 @@ func DayEightExample2() {
 	newMemoryCount := 0
 	newCodeCount := 0
 
-	for i := 0 ; i< len(stringList); i++ {
+	for i := 0; i < len(stringList); i++ {
 		iMemCount, iCodeCount := getStringLengths(stringList[i])
 		originalMemoryCount += iMemCount
 		orginalCodeCount += iCodeCount
@@ -142,18 +141,16 @@ func DayEightExample2() {
 	fmt.Println("Code Difference:", codeDiff)
 }
 
-
 func DayEightPartOne() {
-
 
 	input := ReadFile("day8-input.txt")
 
-	stringList := strings.Split(input, "\n");
+	stringList := strings.Split(input, "\n")
 
 	memoryCount := 0
 	codeCount := 0
 
-	for i := 0 ; i< len(stringList); i++ {
+	for i := 0; i < len(stringList); i++ {
 		iMemCount, iCodeCount := getStringLengths(stringList[i])
 		memoryCount += iMemCount
 		codeCount += iCodeCount
@@ -169,10 +166,9 @@ func DayEightPartOne() {
 
 func DayEightPartTwo() {
 
-
 	input := ReadFile("day8-input.txt")
 
-	stringList := strings.Split(input, "\n");
+	stringList := strings.Split(input, "\n")
 
 	originalMemoryCount := 0
 	orginalCodeCount := 0
@@ -180,7 +176,7 @@ func DayEightPartTwo() {
 	newMemoryCount := 0
 	newCodeCount := 0
 
-	for i := 0 ; i< len(stringList); i++ {
+	for i := 0; i < len(stringList); i++ {
 		iMemCount, iCodeCount := getStringLengths(stringList[i])
 		originalMemoryCount += iMemCount
 		orginalCodeCount += iCodeCount

@@ -1,8 +1,8 @@
 package adventofcode2015
 
 import (
-	"fmt"
 	"crypto/md5"
+	"fmt"
 )
 
 func DayFourPartOne() {
@@ -11,26 +11,24 @@ func DayFourPartOne() {
 	found := false
 	value := 0
 
-	for ; !found; {
+	for !found {
 
 		//fmt.Println("value: ",value)
-		key := fmt.Sprintf("%s%d",input,value)
+		key := fmt.Sprintf("%s%d", input, value)
 		//fmt.Println(key)
 		hasher := md5.New()
 		hasher.Write([]byte(key))
-		firstFive := fmt.Sprintf("%x",hasher.Sum(nil))[0:5]
+		firstFive := fmt.Sprintf("%x", hasher.Sum(nil))[0:5]
 		//fmt.Println(firstFive)
 
 		if firstFive == "00000" {
 			found = true
-			fmt.Println(key)	
+			fmt.Println(key)
 		}
 
 		value++
 	}
 }
-
-
 
 func DayFourPartTwo() {
 
@@ -38,20 +36,18 @@ func DayFourPartTwo() {
 	found := false
 	value := 0
 
-	for ; !found; {
+	for !found {
 
-		key := fmt.Sprintf("%s%d",input,value)
+		key := fmt.Sprintf("%s%d", input, value)
 		hasher := md5.New()
 		hasher.Write([]byte(key))
-		firstSix := fmt.Sprintf("%x",hasher.Sum(nil))[0:6]
+		firstSix := fmt.Sprintf("%x", hasher.Sum(nil))[0:6]
 
 		if firstSix == "000000" {
 			found = true
-			fmt.Println(key)	
+			fmt.Println(key)
 		}
 
 		value++
 	}
 }
-
-

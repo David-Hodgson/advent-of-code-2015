@@ -11,14 +11,14 @@ func lookAndSay(input string) string {
 	currentChar := ""
 	currentCount := 0
 	output := ""
-	for j:= 0 ;j < len(input) ; j++ {
-		checkChar := input[j:j+1]
+	for j := 0; j < len(input); j++ {
+		checkChar := input[j : j+1]
 		if checkChar == currentChar {
 			//Same char increase count
 			currentCount++
 		} else {
 			//different char write previous and change
-			if (currentCount > 0) {
+			if currentCount > 0 {
 				output += strconv.Itoa(currentCount)
 				output += currentChar
 			}
@@ -39,8 +39,8 @@ func DayTenExample() {
 
 	input := "1"
 
-	for i := 0 ;i < 5; i++ {
-		input = lookAndSay(input) 
+	for i := 0; i < 5; i++ {
+		input = lookAndSay(input)
 	}
 
 	fmt.Println("Output:", input)
@@ -52,20 +52,19 @@ func DayTenPartOne() {
 
 	input := "1113122113"
 
-	for i := 0 ;i < 40; i++ {
-		input = lookAndSay(input) 
+	for i := 0; i < 40; i++ {
+		input = lookAndSay(input)
 	}
 
 	fmt.Println("Output:", len(input))
 }
 
 type element struct {
-	number int
-	name string
-	pattern string
+	number    int
+	name      string
+	pattern   string
 	nextStage []string
 }
-
 
 func DayTenPartTwo() {
 
@@ -74,34 +73,34 @@ func DayTenPartTwo() {
 	input := "1113122113"
 
 	fmt.Println(input)
-	elementFile := strings.Split(ReadFile("day10-elements.txt"),"\n")
+	elementFile := strings.Split(ReadFile("day10-elements.txt"), "\n")
 
 	elementList := make([]element, len(elementFile)+1)
 
-	for i := 0 ; i < len(elementFile) ; i++ {
+	for i := 0; i < len(elementFile); i++ {
 
 		elementParts := strings.Split(elementFile[i], "\t")
-		elementNumber,_ := strconv.Atoi(elementParts[1])
+		elementNumber, _ := strconv.Atoi(elementParts[1])
 		elementName := elementParts[2]
 		elementPattern := elementParts[3]
 		var nextStage []string
 
-		elementList[elementNumber] = element{elementNumber,elementName,elementPattern,nextStage}
+		elementList[elementNumber] = element{elementNumber, elementName, elementPattern, nextStage}
 	}
 	//for each element
-		// look at next pattern
-		// if simple next is next elment
-		// else next is a list of elements including the next one
+	// look at next pattern
+	// if simple next is next elment
+	// else next is a list of elements including the next one
 
 	elementNameMap := buildNextStateMap(elementList)
 	var output []element
 	output = append(output, elementNameMap["Fr"])
-	for x :=0 ; x < 50 ; x++ {
+	for x := 0; x < 50; x++ {
 		output = getNextState(output, elementNameMap)
 	}
 	finalPatternLength := 0
 
-	for y:= 0; y<len(output);y++ {
+	for y := 0; y < len(output); y++ {
 		finalPatternLength += len(output[y].pattern)
 	}
 	fmt.Println(finalPatternLength)
@@ -109,7 +108,7 @@ func DayTenPartTwo() {
 
 func getNextState(input []element, elementMap map[string]element) []element {
 
-	output := make([]element,0)
+	output := make([]element, 0)
 
 	for i := 0; i < len(input); i++ {
 		inputElement := input[i]
@@ -127,21 +126,21 @@ func buildNextStateMap(elementList []element) map[string]element {
 	elementNameMap := make(map[string]element)
 	elementNames := make(map[string]element)
 
-	for _,value := range elementList {
+	for _, value := range elementList {
 		elementNames[value.name] = value
 	}
 
-	for i := 1; i < len(elementList) ; i++ {
+	for i := 1; i < len(elementList); i++ {
 
 		currentElement := elementList[i]
 		//fix pattern
 		newPattern := ""
 		var nextStageArray []string
-		oldPatternGroups := strings.Split(currentElement.pattern,".")
-		for j :=0 ; j < len(oldPatternGroups) ; j++ {
-			if _,exists := elementNames[oldPatternGroups[j]];!exists {
+		oldPatternGroups := strings.Split(currentElement.pattern, ".")
+		for j := 0; j < len(oldPatternGroups); j++ {
+			if _, exists := elementNames[oldPatternGroups[j]]; !exists {
 				newPattern = oldPatternGroups[j]
-				nextStageArray = append(nextStageArray,currentElement.name)
+				nextStageArray = append(nextStageArray, currentElement.name)
 			} else {
 				nextStageArray = append(nextStageArray, oldPatternGroups[j])
 			}
@@ -155,10 +154,8 @@ func buildNextStateMap(elementList []element) map[string]element {
 	}
 
 	firstElement := elementNameMap["H"]
-	firstElement.nextStage = []string {"H"}
+	firstElement.nextStage = []string{"H"}
 	elementNameMap["H"] = firstElement
 
 	return elementNameMap
 }
-
-

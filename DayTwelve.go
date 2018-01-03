@@ -62,67 +62,67 @@ func countJsonNumbers(json string) int {
 
 	currentState := START
 
-	stateStack := make([]int,0)
+	stateStack := make([]int, 0)
 	stateStack = append(stateStack, currentState)
 
 	value := ""
 
-	for i :=0 ; i<len(json) ; i++ {
+	for i := 0; i < len(json); i++ {
 
 		currentChar := json[i]
 
-		switch currentState{
-			case ARRAY:
-				switch currentChar{
-					case ']':
-						count += getIntFromString(value)
-						value = ""
-						currentState = stateStack[len(stateStack)-1]
-						stateStack = stateStack[:len(stateStack)-1]
-					case ',':
-						count += getIntFromString(value)
-						value = ""
-					case '[':
-						stateStack = append(stateStack, currentState)
-						currentState = ARRAY
-					case '{':
-						stateStack = append(stateStack, currentState)
-						currentState = OBJECT
-					default:
-						value += string(currentChar)
-				}
-			case OBJECT:
-				switch currentChar {
-					case '}':
-						count += getIntFromString(value)
-						value = ""
-						currentState = stateStack[len(stateStack)-1]
-						stateStack = stateStack[:len(stateStack)-1]
-					case ',':
-						count += getIntFromString(value)
-						value = ""
-					case ':' :
-						value = ""
-					case '{' :
-						stateStack = append(stateStack, currentState)
-						currentState = OBJECT
-					case '[' :
-						stateStack = append(stateStack, currentState)
-						currentState = ARRAY
-					default:
-						value += string(currentChar)
-				}
-			case START:
-				switch currentChar {
-					case '{':
-						stateStack = append(stateStack, currentState)
-						currentState = OBJECT
-						value = ""
-					case '[':
-						stateStack = append(stateStack, currentState)
-						currentState = ARRAY
-						value = ""
-				}
+		switch currentState {
+		case ARRAY:
+			switch currentChar {
+			case ']':
+				count += getIntFromString(value)
+				value = ""
+				currentState = stateStack[len(stateStack)-1]
+				stateStack = stateStack[:len(stateStack)-1]
+			case ',':
+				count += getIntFromString(value)
+				value = ""
+			case '[':
+				stateStack = append(stateStack, currentState)
+				currentState = ARRAY
+			case '{':
+				stateStack = append(stateStack, currentState)
+				currentState = OBJECT
+			default:
+				value += string(currentChar)
+			}
+		case OBJECT:
+			switch currentChar {
+			case '}':
+				count += getIntFromString(value)
+				value = ""
+				currentState = stateStack[len(stateStack)-1]
+				stateStack = stateStack[:len(stateStack)-1]
+			case ',':
+				count += getIntFromString(value)
+				value = ""
+			case ':':
+				value = ""
+			case '{':
+				stateStack = append(stateStack, currentState)
+				currentState = OBJECT
+			case '[':
+				stateStack = append(stateStack, currentState)
+				currentState = ARRAY
+			default:
+				value += string(currentChar)
+			}
+		case START:
+			switch currentChar {
+			case '{':
+				stateStack = append(stateStack, currentState)
+				currentState = OBJECT
+				value = ""
+			case '[':
+				stateStack = append(stateStack, currentState)
+				currentState = ARRAY
+				value = ""
+			}
 
 		}
 	}
@@ -131,99 +131,99 @@ func countJsonNumbers(json string) int {
 
 type excludableCount struct {
 	exclude bool
-	count int
+	count   int
 }
 
 func countJsonNumbersExcludeRed(json string) int {
 
 	currentState := START
 
-	stateStack := make([]int,0)
+	stateStack := make([]int, 0)
 	stateStack = append(stateStack, currentState)
 
-	countStack := make([]excludableCount,0)
-	countStack = append(countStack, excludableCount{false,0})
+	countStack := make([]excludableCount, 0)
+	countStack = append(countStack, excludableCount{false, 0})
 
 	value := ""
 
-	for i :=0 ; i<len(json) ; i++ {
+	for i := 0; i < len(json); i++ {
 
 		currentChar := json[i]
 
-		switch currentState{
-			case ARRAY:
-				switch currentChar{
-					case ']':
-						countStack[len(countStack)-1].count += getIntFromString(value)
-						value = ""
-						currentState = stateStack[len(stateStack)-1]
-						stateStack = stateStack[:len(stateStack)-1]
-						countStack[len(countStack)-2].count += countStack[len(countStack)-1].count
-						countStack = countStack[:len(countStack)-1]
-					case ',':
-						countStack[len(countStack)-1].count += getIntFromString(value)
-						value = ""
-					case '[':
-						stateStack = append(stateStack, currentState)
+		switch currentState {
+		case ARRAY:
+			switch currentChar {
+			case ']':
+				countStack[len(countStack)-1].count += getIntFromString(value)
+				value = ""
+				currentState = stateStack[len(stateStack)-1]
+				stateStack = stateStack[:len(stateStack)-1]
+				countStack[len(countStack)-2].count += countStack[len(countStack)-1].count
+				countStack = countStack[:len(countStack)-1]
+			case ',':
+				countStack[len(countStack)-1].count += getIntFromString(value)
+				value = ""
+			case '[':
+				stateStack = append(stateStack, currentState)
 
-						countStack = append(countStack, excludableCount{false,0})
-						currentState = ARRAY
-					case '{':
-						stateStack = append(stateStack, currentState)
-						currentState = OBJECT
-						countStack = append(countStack, excludableCount{false,0})
-					default:
-						value += string(currentChar)
+				countStack = append(countStack, excludableCount{false, 0})
+				currentState = ARRAY
+			case '{':
+				stateStack = append(stateStack, currentState)
+				currentState = OBJECT
+				countStack = append(countStack, excludableCount{false, 0})
+			default:
+				value += string(currentChar)
+			}
+		case OBJECT:
+			switch currentChar {
+			case '}':
+				if value == "\"red\"" {
+					countStack[len(stateStack)-1].exclude = true
 				}
-			case OBJECT:
-				switch currentChar {
-					case '}':
-						if value == "\"red\"" {
-							countStack[len(stateStack)-1].exclude = true
-						}
-						countStack[len(countStack)-1].count += getIntFromString(value)
-						value = ""
-						currentState = stateStack[len(stateStack)-1]
-						stateStack = stateStack[:len(stateStack)-1]
+				countStack[len(countStack)-1].count += getIntFromString(value)
+				value = ""
+				currentState = stateStack[len(stateStack)-1]
+				stateStack = stateStack[:len(stateStack)-1]
 
-						if !countStack[len(countStack)-1].exclude {
-							countStack[len(countStack)-2].count += countStack[len(countStack)-1].count
-						}
-						countStack = countStack[:len(countStack)-1]
-					case ',':
-
-						if value == "\"red\"" {
-							countStack[len(stateStack)-1].exclude = true
-						}
-						countStack[len(countStack)-1].count += getIntFromString(value)
-						value = ""
-					case ':' :
-						value = ""
-					case '{' :
-						stateStack = append(stateStack, currentState)
-						currentState = OBJECT
-						countStack = append(countStack, excludableCount{false,0})
-					case '[' :
-						stateStack = append(stateStack, currentState)
-						currentState = ARRAY
-
-						countStack = append(countStack, excludableCount{false,0})
-					default:
-						value += string(currentChar)
+				if !countStack[len(countStack)-1].exclude {
+					countStack[len(countStack)-2].count += countStack[len(countStack)-1].count
 				}
-			case START:
-				switch currentChar {
-					case '{':
-						stateStack = append(stateStack, currentState)
-						currentState = OBJECT
-						value = ""
-						countStack = append(countStack, excludableCount{false,0})
-					case '[':
-						stateStack = append(stateStack, currentState)
-						currentState = ARRAY
-						countStack = append(countStack, excludableCount{false,0})
-						value = ""
+				countStack = countStack[:len(countStack)-1]
+			case ',':
+
+				if value == "\"red\"" {
+					countStack[len(stateStack)-1].exclude = true
 				}
+				countStack[len(countStack)-1].count += getIntFromString(value)
+				value = ""
+			case ':':
+				value = ""
+			case '{':
+				stateStack = append(stateStack, currentState)
+				currentState = OBJECT
+				countStack = append(countStack, excludableCount{false, 0})
+			case '[':
+				stateStack = append(stateStack, currentState)
+				currentState = ARRAY
+
+				countStack = append(countStack, excludableCount{false, 0})
+			default:
+				value += string(currentChar)
+			}
+		case START:
+			switch currentChar {
+			case '{':
+				stateStack = append(stateStack, currentState)
+				currentState = OBJECT
+				value = ""
+				countStack = append(countStack, excludableCount{false, 0})
+			case '[':
+				stateStack = append(stateStack, currentState)
+				currentState = ARRAY
+				countStack = append(countStack, excludableCount{false, 0})
+				value = ""
+			}
 
 		}
 	}
@@ -233,7 +233,7 @@ func countJsonNumbersExcludeRed(json string) int {
 
 func getIntFromString(input string) int {
 
-	if value,err := strconv.Atoi(input) ; err == nil {
+	if value, err := strconv.Atoi(input); err == nil {
 		return value
 	}
 

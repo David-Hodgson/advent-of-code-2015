@@ -19,9 +19,9 @@ func isValidPassword(password string) bool {
 	pairOneStart := 0
 	pairTwoStart := 0
 
-	for i:=0;i<len(password)-1;i++ {
+	for i := 0; i < len(password)-1; i++ {
 
-		if i<len(password)-2 && password[i]+1 == password[i+1] && password[i]+2 == password[i+2] {
+		if i < len(password)-2 && password[i]+1 == password[i+1] && password[i]+2 == password[i+2] {
 			includesStraight = true
 		}
 
@@ -47,17 +47,16 @@ func isValidPassword(password string) bool {
 
 func generateNextPassword(currentPassword string) string {
 
-
 	newPassword := []rune(currentPassword)
-	overflow := true 
+	overflow := true
 
-	for i:=1; i<=len(newPassword) && overflow; i++ {
+	for i := 1; i <= len(newPassword) && overflow; i++ {
 
 		currentChar := newPassword[len(newPassword)-i]
 		currentChar = currentChar + 1
 
 		if currentChar == 'o' || currentChar == 'i' || currentChar == 'l' {
-			currentChar = currentChar +1
+			currentChar = currentChar + 1
 		}
 
 		if currentChar == '{' {
@@ -66,7 +65,7 @@ func generateNextPassword(currentPassword string) string {
 		} else {
 			overflow = false
 		}
-		newPassword[len(newPassword)-i] = currentChar 
+		newPassword[len(newPassword)-i] = currentChar
 	}
 	return string(newPassword)
 }
@@ -91,7 +90,7 @@ func DayElevenExample() {
 	fmt.Println(input, ":", isValidPassword(input))
 
 	password := "aa"
-	for i:=0; i< 126 ;i++ {
+	for i := 0; i < 126; i++ {
 		password = generateNextPassword(password)
 		fmt.Println(password)
 	}
@@ -105,7 +104,7 @@ func DayElevenPartOne() {
 
 	fmt.Println("Current Password:", currentPassword)
 
-	for ; ; {
+	for {
 
 		currentPassword = generateNextPassword(currentPassword)
 		if isValidPassword(currentPassword) {
@@ -122,7 +121,7 @@ func DayElevenPartTwo() {
 
 	updatedPassword := "hxbxxyzz"
 
-	for ;; {
+	for {
 		updatedPassword = generateNextPassword(updatedPassword)
 		if isValidPassword(updatedPassword) {
 			break

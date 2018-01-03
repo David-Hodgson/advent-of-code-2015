@@ -1,4 +1,4 @@
-package adventofcode2015 
+package adventofcode2015
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ func DayOne() {
 	pos := 0
 
 	for i := 0; i < len(input); i++ {
-	
+
 		if input[i:i+1] == "(" {
 			currentFloor++
 		}
@@ -35,7 +35,7 @@ func DayOne() {
 		if currentFloor == -1 {
 			pos = i
 			break
-		}	
+		}
 	}
 
 	fmt.Printf("Poss: %v", pos)
