@@ -2,8 +2,8 @@ package adventofcode2015
 
 import (
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 type Route struct {
@@ -21,7 +21,7 @@ func DayNineExample() {
 	destinations := make(map[string]bool)
 	routes := make(map[Route]int)
 
-	for i :=0 ; i< len(routeStrings) ; i++ {
+	for i := 0; i < len(routeStrings); i++ {
 
 		fmt.Println(routeStrings[i])
 
@@ -29,7 +29,7 @@ func DayNineExample() {
 
 		startPoint := parts[0]
 		endPoint := parts[2]
-		distance,_ := strconv.Atoi(parts[4])
+		distance, _ := strconv.Atoi(parts[4])
 
 		destinations[startPoint] = true
 		destinations[endPoint] = true
@@ -42,9 +42,9 @@ func DayNineExample() {
 	fmt.Println(destinations)
 	fmt.Println(routes)
 
-	routesCombos :=	generateRoutes(destinations)
+	routesCombos := generateRoutes(destinations)
 
-	for j := 0 ; j < len(routesCombos) ; j++ {
+	for j := 0; j < len(routesCombos); j++ {
 
 		fmt.Println(routesCombos[j])
 		fmt.Println(getRouteLength(routesCombos[j], routes))
@@ -62,13 +62,13 @@ func DayNinePartOne() {
 	destinations := make(map[string]bool)
 	routes := make(map[Route]int)
 
-	for i :=0 ; i< len(routeStrings) ; i++ {
+	for i := 0; i < len(routeStrings); i++ {
 
 		parts := strings.Split(routeStrings[i], " ")
 
 		startPoint := parts[0]
 		endPoint := parts[2]
-		distance,_ := strconv.Atoi(parts[4])
+		distance, _ := strconv.Atoi(parts[4])
 
 		destinations[startPoint] = true
 		destinations[endPoint] = true
@@ -80,10 +80,10 @@ func DayNinePartOne() {
 	fmt.Println(destinations)
 	fmt.Println(routes)
 
-	routesCombos :=	generateRoutes(destinations)
+	routesCombos := generateRoutes(destinations)
 
 	minDistance := -1
-	for j := 0 ; j < len(routesCombos) ; j++ {
+	for j := 0; j < len(routesCombos); j++ {
 
 		dist := getRouteLength(routesCombos[j], routes)
 
@@ -106,13 +106,13 @@ func DayNinePartTwo() {
 	destinations := make(map[string]bool)
 	routes := make(map[Route]int)
 
-	for i :=0 ; i< len(routeStrings) ; i++ {
+	for i := 0; i < len(routeStrings); i++ {
 
 		parts := strings.Split(routeStrings[i], " ")
 
 		startPoint := parts[0]
 		endPoint := parts[2]
-		distance,_ := strconv.Atoi(parts[4])
+		distance, _ := strconv.Atoi(parts[4])
 
 		destinations[startPoint] = true
 		destinations[endPoint] = true
@@ -124,11 +124,11 @@ func DayNinePartTwo() {
 	fmt.Println(destinations)
 	fmt.Println(routes)
 
-	routesCombos :=	generateRoutes(destinations)
+	routesCombos := generateRoutes(destinations)
 
 	minDistance := -1
 	maxDistance := 0
-	for j := 0 ; j < len(routesCombos) ; j++ {
+	for j := 0; j < len(routesCombos); j++ {
 
 		dist := getRouteLength(routesCombos[j], routes)
 
@@ -149,7 +149,7 @@ func getRouteLength(route []string, distanceMap map[Route]int) int {
 
 	distance := 0
 
-	for i := 0; i < len(route) -1; i++ {
+	for i := 0; i < len(route)-1; i++ {
 
 		route := Route{route[i], route[i+1]}
 
@@ -160,12 +160,12 @@ func getRouteLength(route []string, distanceMap map[Route]int) int {
 
 func generateRoutes(destinations map[string]bool) [][]string {
 
-	var routes [][]string 
-	for destination,_ := range destinations {
+	var routes [][]string
+	for destination, _ := range destinations {
 
 		remainingDests := make(map[string]bool)
 
-		for otherDest,_ := range destinations {
+		for otherDest, _ := range destinations {
 			if otherDest != destination {
 				remainingDests[otherDest] = true
 			}
@@ -176,23 +176,20 @@ func generateRoutes(destinations map[string]bool) [][]string {
 			//Keep tracking
 			otherRoutes := generateRoutes(remainingDests)
 
-			for i := 0 ; i < len(otherRoutes) ; i++ {
+			for i := 0; i < len(otherRoutes); i++ {
 
 				var currentRoute []string
 				currentRoute = append(currentRoute, destination)
 				currentRoute = append(currentRoute, otherRoutes[i]...)
-				routes = append(routes,currentRoute)
+				routes = append(routes, currentRoute)
 			}
 		} else {
 			var currentRoute []string
 			currentRoute = append(currentRoute, destination)
-			routes = append(routes,currentRoute)
+			routes = append(routes, currentRoute)
 		}
 
 	}
 
-	return routes 
+	return routes
 }
-
-
-

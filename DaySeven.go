@@ -2,18 +2,19 @@ package adventofcode2015
 
 import (
 	"fmt"
-	"strings"
-	"strconv"
 	"log"
+	"strconv"
+	"strings"
 )
 
 var (
 	limit = 50
 	count = 0
 )
+
 func getValue(circuit map[string]string, register string) string {
 
-	count++;
+	count++
 
 	if count > limit {
 		log.Panic("Done enough")
@@ -23,38 +24,38 @@ func getValue(circuit map[string]string, register string) string {
 	bob := circuit[register]
 
 	fmt.Println(bob)
-//	return bob
+	//	return bob
 
 	if bob == "" {
 		fmt.Println("Getting ", register, " and it's empty")
 	}
 	if strings.HasPrefix(bob, "NOT") {
 		parts := strings.Split(bob, " ")
-		value,_ := strconv.ParseUint(getValue(circuit, parts[1] ),10,16)
+		value, _ := strconv.ParseUint(getValue(circuit, parts[1]), 10, 16)
 		return strconv.Itoa(int(^uint16(value)))
 	} else if strings.Contains(bob, "AND") {
 		parts := strings.Split(bob, " ")
-		value1,_ := strconv.ParseUint(getValue(circuit, parts[0] ),10,16)
-		value2,_ := strconv.ParseUint(getValue(circuit, parts[2] ),10,16)
+		value1, _ := strconv.ParseUint(getValue(circuit, parts[0]), 10, 16)
+		value2, _ := strconv.ParseUint(getValue(circuit, parts[2]), 10, 16)
 		return strconv.Itoa(int(uint16(value1) & uint16(value2)))
 	} else if strings.Contains(bob, "OR") {
 		parts := strings.Split(bob, " ")
-		value1,_ := strconv.ParseUint(getValue(circuit, parts[0] ),10,16)
-		value2,_ := strconv.ParseUint(getValue(circuit, parts[2] ),10,16)
+		value1, _ := strconv.ParseUint(getValue(circuit, parts[0]), 10, 16)
+		value2, _ := strconv.ParseUint(getValue(circuit, parts[2]), 10, 16)
 		return strconv.Itoa(int(uint16(value1) | uint16(value2)))
 	} else if strings.Contains(bob, "LSHIFT") {
 		parts := strings.Split(bob, " ")
-		value1,_ := strconv.ParseUint(getValue(circuit, parts[0] ),10,16)
-		shift,_ := strconv.ParseUint(parts[2],10,16)
+		value1, _ := strconv.ParseUint(getValue(circuit, parts[0]), 10, 16)
+		shift, _ := strconv.ParseUint(parts[2], 10, 16)
 		return strconv.Itoa(int(uint16(value1) << shift))
 	} else if strings.Contains(bob, "RSHIFT") {
 		parts := strings.Split(bob, " ")
-		value1,_ := strconv.ParseUint(getValue(circuit, parts[0] ),10,16)
-		shift,_ := strconv.ParseUint(parts[2],10,16)
+		value1, _ := strconv.ParseUint(getValue(circuit, parts[0]), 10, 16)
+		shift, _ := strconv.ParseUint(parts[2], 10, 16)
 		return strconv.Itoa(int(uint16(value1) >> shift))
 	} else {
 		fmt.Println("In else")
-		if _,exists := circuit[bob]; exists {
+		if _, exists := circuit[bob]; exists {
 			fmt.Println("register ", bob, "exists")
 			return getValue(circuit, bob)
 		}
@@ -71,7 +72,7 @@ func DaySevenExample() {
 	connections := strings.Split(input, "\n")
 
 	positions := make(map[string]string)
-	for i := 0 ; i < len(connections);i++ {
+	for i := 0; i < len(connections); i++ {
 
 		//fmt.Println(connections[i])
 		bits := strings.Split(connections[i], "-> ")
@@ -93,8 +94,7 @@ func DaySevenExample() {
 
 	circuit := make(map[string]string)
 
-
-	for i := 0 ; i< 50; i++ {
+	for i := 0; i < 50; i++ {
 		for key, value := range positions {
 			//fmt.Println("Key:", key, "Value:", value)
 			if shift, err := strconv.ParseUint(value, 10, 16); err == nil {
@@ -112,11 +112,9 @@ func DaySevenExample() {
 	fmt.Println(positions)
 	fmt.Println(circuit)
 
-
 }
 
 func DaySevenPartOne() {
-
 
 	input := ReadFile("day7-input.txt")
 
@@ -128,7 +126,7 @@ func DaySevenPartOne() {
 	connections := strings.Split(input, sep)
 
 	positions := make(map[string]string)
-	for i := 0 ; i < len(connections);i++ {
+	for i := 0; i < len(connections); i++ {
 
 		bits := strings.Split(connections[i], "-> ")
 		positions[bits[1]] = strings.Trim(bits[0], " ")
@@ -145,8 +143,7 @@ func DaySevenPartOne() {
 
 	circuit := make(map[string]string)
 
-
-	for i := 0 ; i< 202; i++ {
+	for i := 0; i < 202; i++ {
 		for key, value := range positions {
 			//fmt.Println("Key:", key, "Value:", value)
 			if shift, err := strconv.ParseUint(value, 10, 16); err == nil {
@@ -169,9 +166,7 @@ func DaySevenPartOne() {
 
 }
 
-
 func DaySevenPartTwo() {
-
 
 	input := ReadFile("day7-input.txt")
 
@@ -183,7 +178,7 @@ func DaySevenPartTwo() {
 	connections := strings.Split(input, sep)
 
 	positions := make(map[string]string)
-	for i := 0 ; i < len(connections);i++ {
+	for i := 0; i < len(connections); i++ {
 
 		bits := strings.Split(connections[i], "-> ")
 		positions[bits[1]] = strings.Trim(bits[0], " ")
@@ -193,8 +188,7 @@ func DaySevenPartTwo() {
 
 	circuit := make(map[string]string)
 
-
-	for i := 0 ; i< 202; i++ {
+	for i := 0; i < 202; i++ {
 		for key, value := range positions {
 			if _, err := strconv.ParseUint(value, 10, 16); err == nil {
 				updateCircuit(positions, key, value)
@@ -213,7 +207,6 @@ func DaySevenPartTwo() {
 
 }
 
-
 func updateCircuit(circuit map[string]string, register string, replacement string) {
 
 	for key, value := range circuit {
@@ -222,7 +215,7 @@ func updateCircuit(circuit map[string]string, register string, replacement strin
 			parts := strings.Split(value, " ")
 
 			if register == parts[1] {
-				parsedReplacement,_ := strconv.ParseUint(replacement,10,16)
+				parsedReplacement, _ := strconv.ParseUint(replacement, 10, 16)
 				newValue := strconv.Itoa(int(^uint16(parsedReplacement)))
 				circuit[key] = newValue
 			}
@@ -243,8 +236,8 @@ func updateCircuit(circuit map[string]string, register string, replacement strin
 			parts := strings.Split(value, " ")
 
 			if register == parts[0] {
-				shift,_ := strconv.ParseUint(parts[2],10,16)
-				value1,_ := strconv.ParseUint(replacement,10,16)
+				shift, _ := strconv.ParseUint(parts[2], 10, 16)
+				value1, _ := strconv.ParseUint(replacement, 10, 16)
 				newValue := strconv.Itoa(int(uint16(value1) << shift))
 				circuit[key] = newValue
 			}
@@ -253,8 +246,8 @@ func updateCircuit(circuit map[string]string, register string, replacement strin
 			parts := strings.Split(value, " ")
 
 			if register == parts[0] {
-				shift,_ := strconv.ParseUint(parts[2],10,16)
-				value1,_ := strconv.ParseUint(replacement,10,16)
+				shift, _ := strconv.ParseUint(parts[2], 10, 16)
+				value1, _ := strconv.ParseUint(replacement, 10, 16)
 				newValue := strconv.Itoa(int(uint16(value1) >> shift))
 				circuit[key] = newValue
 			}

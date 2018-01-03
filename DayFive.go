@@ -1,15 +1,15 @@
 package adventofcode2015
 
 import (
-	"regexp"
 	"fmt"
+	"regexp"
 	"strings"
 )
 
 func isSentenceNiceV1(sentence string) bool {
 
 	nodisallowed := true
-	if strings.Contains(sentence,"ab") || strings.Contains(sentence,"cd") || strings.Contains(sentence,"pq") || strings.Contains(sentence,"xy") {
+	if strings.Contains(sentence, "ab") || strings.Contains(sentence, "cd") || strings.Contains(sentence, "pq") || strings.Contains(sentence, "xy") {
 		nodisallowed = false
 	}
 
@@ -17,11 +17,11 @@ func isSentenceNiceV1(sentence string) bool {
 	doubleletters := false
 
 	if nodisallowed {
-		threeVowels, _ = regexp.Match(`([aeiou]\w*){3}`, []byte(sentence));
+		threeVowels, _ = regexp.Match(`([aeiou]\w*){3}`, []byte(sentence))
 
-		for i := 0; i<len(sentence)-1;i++ {
+		for i := 0; i < len(sentence)-1; i++ {
 
-			if (sentence[i] == sentence[i+1]) {
+			if sentence[i] == sentence[i+1] {
 				doubleletters = true
 			}
 		}
@@ -35,19 +35,19 @@ func isSentenceNiceV2(sentence string) bool {
 	letterPairs := false
 	repeats := false
 
-	for i := 0; i<len(sentence)-2;i++ {
+	for i := 0; i < len(sentence)-2; i++ {
 
-		if (sentence[i] == sentence[i+2]) {
+		if sentence[i] == sentence[i+2] {
 			repeats = true
 		}
 	}
 
 	pairs := make(map[string]int)
-	for i := 0; i<len(sentence)-1;i++ {
+	for i := 0; i < len(sentence)-1; i++ {
 
-		pair := sentence[i:i+2]
+		pair := sentence[i : i+2]
 
-		if pos,exists := pairs[pair]; exists {
+		if pos, exists := pairs[pair]; exists {
 			if i > pos+1 {
 				letterPairs = true
 				break
@@ -68,14 +68,14 @@ func DayFivePartOne() {
 
 	niceCount := 0
 
-	for i := 0; i<len(sentences); i++ {
+	for i := 0; i < len(sentences); i++ {
 
 		if isSentenceNiceV1(sentences[i]) {
 			niceCount++
 		}
 	}
 
-	fmt.Println("Nice Sentences: ",niceCount)
+	fmt.Println("Nice Sentences: ", niceCount)
 }
 
 func DayFivePartTwo() {
@@ -86,12 +86,12 @@ func DayFivePartTwo() {
 
 	niceCount := 0
 
-	for i := 0; i<len(sentences); i++ {
+	for i := 0; i < len(sentences); i++ {
 
 		if isSentenceNiceV2(sentences[i]) {
 			niceCount++
 		}
 	}
 
-	fmt.Println("Nice Sentences: ",niceCount)
+	fmt.Println("Nice Sentences: ", niceCount)
 }
