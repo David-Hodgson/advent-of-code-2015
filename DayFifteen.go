@@ -54,8 +54,19 @@ func getRecipeScore(recipeMap map[ingredient]int) int {
 	if texScore < 0 {
 		texScore = 0
 	}
-	
-	return capScore * durScore * flavScore * texScore 
+
+	return capScore * durScore * flavScore * texScore
+}
+
+func getRecipeCalories(recipeMap map[ingredient]int) int {
+
+	calorieScore := 0
+
+	for key,value := range recipeMap {
+		calorieScore += value * key.calories
+	}
+
+	return calorieScore
 }
 
 func DayFifteenExample() {
@@ -142,6 +153,61 @@ func DayFifteenPartOne() {
 					//fmt.Println("i:", i, "j:", j, "Score:", score)
 					if score > maxScore {
 						maxScore = score
+					}
+				}
+			}
+		}
+	}
+
+	fmt.Println("Score:", maxScore)
+}
+
+
+func DayFifteenPartTwo() {
+
+	fmt.Println("Day 15 - Part Two")
+
+	input := ReadFile("day15-input.txt")
+
+	ingredients := strings.Split(input, "\n")
+
+	ingredientList := make([]ingredient,len(ingredients))
+	for i := 0; i < len(ingredients); i++ {
+
+		ingredient := parseIngredient(ingredients[i])
+		ingredientList[i] = ingredient
+	}
+
+	fmt.Println(ingredientList)
+
+	maxIngredientCount := 100
+
+	maxScore := 0
+
+	for i := 0; i <= maxIngredientCount ; i++ {
+		remainingIngredientCount1 := maxIngredientCount - i
+
+		for j:=0; j<= remainingIngredientCount1; j++ {
+			remainingIngredientCount2:= remainingIngredientCount1 -j
+
+			for k := 0; k <= remainingIngredientCount2; k++ {
+				remainingIngredientCount3 := remainingIngredientCount2 - k
+
+				for l :=0; l <= remainingIngredientCount3; l++ {
+
+					recipe := make(map[ingredient]int)
+
+					recipe[ingredientList[0]] = i
+					recipe[ingredientList[1]] = j
+					recipe[ingredientList[2]] = k
+					recipe[ingredientList[3]] = l
+
+					if getRecipeCalories(recipe) == 500 {
+						score := getRecipeScore(recipe)
+						//fmt.Println("i:", i, "j:", j, "Score:", score)
+						if score > maxScore {
+							maxScore = score
+						}
 					}
 				}
 			}
