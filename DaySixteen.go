@@ -1,0 +1,58 @@
+package adventofcode2015
+
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+func DaySixteenExample() {
+
+	fmt.Println("Day 16 - Example")
+
+}
+
+func DaySixteenPartOne() {
+
+	fmt.Println("Day 16 - Part One")
+
+
+	mfcsamOutput := strings.Split("children: 3\ncats: 7\nsamoyeds: 2\npomeranians: 3\nakitas: 0\nvizslas: 0\ngoldfish: 5\ntrees: 3\ncars: 2\nperfumes: 1", "\n")
+
+	mfcsamMap := make(map[string]int)
+
+	for i := 0; i < len(mfcsamOutput); i++ {
+		presentParts := strings.Split(mfcsamOutput[i], ":")
+
+		presentName := presentParts[0]
+		presentCount, _ := strconv.Atoi(presentParts[1][1:])
+
+		mfcsamMap[presentName] = presentCount
+	}
+
+	fmt.Println(mfcsamMap)
+	input := ReadFile("day16-input.txt")
+
+	sueList := strings.Split(input, "\n")
+
+	for k := 0 ; k < len(sueList); k++ {
+
+		sue := sueList[k]
+
+		match := true 
+
+		for present, count := range mfcsamMap {
+
+			if strings.Contains(sue, present) {
+				if !strings.Contains(sue, fmt.Sprintf("%s: %d", present, count)){
+					match =  false
+					break
+				}
+			}
+		}
+
+		if match {
+			fmt.Println(sue,"Matches")
+		}
+	}
+}
