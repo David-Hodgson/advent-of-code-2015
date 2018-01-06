@@ -66,3 +66,31 @@ func DaySeventeenPartOne() {
 
 	fmt.Println("Combinations: ", len(getStoreCombinations(amountToStore, containers)))
 }
+
+func DaySeventeenPartTwo() {
+
+	fmt.Println("Day 17 - Part Two")
+
+	amountToStore := 150
+
+	input := strings.Split(ReadFile("day17-input.txt"),"\n")
+	containers := make([]int,len(input))
+
+	for i := 0; i < len(input); i++ {
+		size, _ := strconv.Atoi(input[i])
+		containers[i] = size
+	}
+
+	combinations := getStoreCombinations(amountToStore, containers)
+	fmt.Println("Combinations: ", len(combinations))
+
+	sizeMap := make(map[int]int)
+
+	for j:=0; j<len(combinations); j++ {
+		comboLength := len(combinations[j])
+
+		sizeMap[comboLength] = sizeMap[comboLength]+1
+	}
+
+	fmt.Println(sizeMap)
+}
