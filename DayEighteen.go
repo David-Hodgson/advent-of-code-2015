@@ -132,4 +132,22 @@ func DayEighteenPartOne() {
 	fmt.Println("Lit Count:", getLitCount(matrix))
 }
 
+func DayEighteenPartTwo() {
 
+	fmt.Println("Day 18 - Part Two")
+
+	input := ReadFile("day18-input.txt")
+
+	matrix := parseMatrix(input)
+
+	for i:=0; i < 100; i++ {
+		matrix = animateMatrix(matrix)
+
+		matrix[0][0] = true
+		matrix[0][len(matrix[0])-1] = true
+		matrix[len(matrix)-1][0] = true
+		matrix[len(matrix)-1][len(matrix[len(matrix)-1])-1] = true
+	}
+
+	fmt.Println("Lit Count:", getLitCount(matrix))
+}
