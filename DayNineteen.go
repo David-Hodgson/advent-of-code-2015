@@ -105,6 +105,7 @@ func DayNineteenPartTwo() {
 		for molecule, processed := range molecules {
 			if !processed {
 				newMoleculeMap := performReplacement(molecule, replacements)
+				molecules[molecule] = true
 				for newMolecule, _ := range newMoleculeMap {
 
 					if _, exists := molecules[newMolecule] ; !exists {
