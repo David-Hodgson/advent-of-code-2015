@@ -74,3 +74,54 @@ func DayNineteenPartOne() {
 	output := performReplacement(starting,replacements)
 	fmt.Println("Number of new molecules:", len(output))
 }
+
+func DayNineteenPartTwo() {
+
+	fmt.Println("Day 19 - Part Two")
+
+	input := strings.Split(ReadFile("day19-input.txt"),"\n")
+
+	replacements := make(map[replacement]bool)
+
+	for i:=0; i < len(input)-2; i++ {
+		parts := strings.Split(input[i], "=>")
+
+		source := strings.Trim(parts[0], " ")
+		dest := strings.Trim(parts[1], " ")
+		replacements[replacement{source,dest}] = true
+
+	}
+	aim := input[len(input)-1]
+
+	starting := "e"
+	done := false
+	stepCount :=0
+	molecules := make(map[string]bool)
+	molecules[starting] = false
+
+	for ; !done; {
+		stepCount++
+		fmt.Println("Depth:", stepCount)
+		for molecule, processed := range molecules {
+			if !processed {
+				newMoleculeMap := performReplacement(molecule, replacements)
+				for newMolecule, _ := range newMoleculeMap {
+
+					if _, exists := molecules[newMolecule] ; !exists {
+						molecules[newMolecule] = false
+					}
+				}
+
+			}
+
+		}
+
+		if molecules[aim] {
+			done = true
+			break
+		}
+
+	}
+
+	fmt.Println("Steps:", stepCount)
+}
