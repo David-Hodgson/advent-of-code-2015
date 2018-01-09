@@ -94,35 +94,35 @@ func DayNineteenPartTwo() {
 	aim := input[len(input)-1]
 
 	starting := "e"
-	done := false
-	stepCount :=0
-	molecules := make(map[string]bool)
-	molecules[starting] = false
+	fmt.Println(starting)
+	for i:= 1; i < 300; i++ {
+		longestReplacement := 0
+		currentReplace := replacement{"",""}
 
-	for ; !done; {
-		stepCount++
-		fmt.Println("Depth:", stepCount)
-		for molecule, processed := range molecules {
-			if !processed {
-				newMoleculeMap := performReplacement(molecule, replacements)
-				molecules[molecule] = true
-				for newMolecule, _ := range newMoleculeMap {
-
-					if _, exists := molecules[newMolecule] ; !exists {
-						molecules[newMolecule] = false
-					}
-				}
-
+		for replacementValue, _ := range replacements {
+			if strings.Contains(aim, replacementValue.output) && longestReplacement < len(replacementValue.output) {
+				currentReplace = replacementValue
+				longestReplacement = len(replacementValue.output)
 			}
-
 		}
 
-		if molecules[aim] {
-			done = true
+		if longestReplacement > 0 {
+			fmt.Println("Going to use:", currentReplace)
+
+			aim = strings.Replace(aim, currentReplace.output, currentReplace.input,1)
+		//	fmt.Println(aim)
+			if aim == starting {
+				fmt.Println("We are done at:", i)
+				break
+			}
+		} else {
+			fmt.Println("No more replacements")
+
 			break
 		}
 
+
 	}
 
-	fmt.Println("Steps:", stepCount)
+	fmt.Println(aim)
 }
