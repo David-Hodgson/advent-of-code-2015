@@ -78,7 +78,7 @@ func DayTwentyPartTwo() {
 
 	houseNumber := 0
 
-	for i := 7187040 ;i>0 ;i-- {
+	for i := 7185024 ;i>0 ;i-- {
 
 		score := getLimitedHouseScore(i)
 		if score >= input {
