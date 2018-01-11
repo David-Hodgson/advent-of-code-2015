@@ -114,3 +114,51 @@ func DayTwentyOnePartOne() {
 
 	fmt.Println("Lowest Winner Cost is", minCost)
 }
+
+
+func DayTwentyOnePartTwo() {
+
+	fmt.Println("Day 21 - Part 1")
+
+	weapons := []int {4,5,6,7,8}
+	weaponCosts := []int {8,19,25,40,74}
+
+	armourItems := []int {0,1,2,3,4,5}
+	armourCosts := []int {0,13,31,53,75,102}
+
+	rings := []ring {ring{0,0,0},ring{0,0,0},ring{25,1,0},ring{50,2,0},ring{100,3,0},ring{20,0,1},ring{40,0,2},ring{80,0,3}}
+
+	maxCost := 0
+	for i :=0; i <len(weapons); i++ {
+		for k :=0; k < len(armourItems); k++ {
+			for x := 0; x < len(rings); x ++ {
+				for y :=0; y<len(rings);y++ {
+					if x==y {
+						continue
+					}
+
+					player := character{100,0,0}
+					boss := character{104,8,1}
+
+					player.damage += weapons[i]
+					player.armour += armourItems[k]
+					player.damage += rings[x].damage
+					player.damage += rings[y].damage
+					player.armour += rings[x].armour
+					player.armour += rings[y].armour
+
+					playerWins := isPlayerWinner(player,boss)
+
+					if !playerWins {
+						cost := weaponCosts[i] + armourCosts[k] + rings[x].cost + rings[y].cost
+						if cost > maxCost {
+							maxCost = cost
+						}
+					}
+				}
+			}
+		}
+	}
+
+	fmt.Println("Highest Loser Cost is", maxCost)
+}
