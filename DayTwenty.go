@@ -16,12 +16,19 @@ func DayTwentyExample() {
 func getFactors(input int) []int {
 
 	factors := make([]int,0)
+	factorMap := make(map[int]bool)
 
-	for i :=1; i <= input; i++ {
-
+	for i :=1; i <= (input/2)+1; i++ {
 		if input % i == 0 {
-			factors = append(factors,i)
+			//factors = append(factors,i)
+			//factors = append(factors, input/i)
+			factorMap[i] = true
+			factorMap[input/i] = true
 		}
+	}
+
+	for key,_ := range factorMap {
+		factors = append(factors,key)
 	}
 	return factors
 }
@@ -76,16 +83,29 @@ func DayTwentyPartTwo() {
 	fmt.Println("Day 20 - Part Two")
 	input := 29000000
 
-	houseNumber := 0
+	houses := make([]int, input)
 
-	for i := 7185024 ;i>0 ;i-- {
-
-		score := getLimitedHouseScore(i)
-		if score >= input {
-			houseNumber = i
-			fmt.Println("House",i,"is less than",input,"actually",score)
+	for i := 1; i< len(houses); i++ {
+		count := 0
+		for j :=i; j< len(houses); j+=i {
+			houses[j] += i*11
+			if count == 49 {
+				break
+			}
+			count++
 		}
 	}
+
+	houseNumber := 0
+
+	for i:=1; i<len(houses); i++ {
+
+		if houses[i] >= input {
+			houseNumber = i
+			break
+		}
+	}
+
 
 	fmt.Println("House number", houseNumber)
 
