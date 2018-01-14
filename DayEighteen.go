@@ -34,20 +34,20 @@ func animateMatrix(inputMatrix [][]bool) [][]bool {
 		outputRow := make([]bool, len(inputMatrix[y]))
 
 		for x := 0; x < len(inputMatrix[y]); x++ {
-			outputRow[x] = getNextCellState(x,y,inputMatrix)
+			outputRow[x] = getNextCellState(x, y, inputMatrix)
 		}
 		outputMatrix[y] = outputRow
 	}
 	return outputMatrix
 }
 
-func getNextCellState(x,y int, matrix [][]bool) bool {
-	litCount :=0
+func getNextCellState(x, y int, matrix [][]bool) bool {
+	litCount := 0
 
 	//Row Above
-	if y>0 {
+	if y > 0 {
 		//Above left
-		if x>0 && matrix[y-1][x-1] {
+		if x > 0 && matrix[y-1][x-1] {
 			litCount++
 		}
 		//above center
@@ -55,7 +55,7 @@ func getNextCellState(x,y int, matrix [][]bool) bool {
 			litCount++
 		}
 		//above right
-		if x<len(matrix[y])-1 && matrix[y-1][x+1] {
+		if x < len(matrix[y])-1 && matrix[y-1][x+1] {
 			litCount++
 		}
 	}
@@ -63,19 +63,19 @@ func getNextCellState(x,y int, matrix [][]bool) bool {
 	//Same Row
 
 	//Center left
-	if x>0 && matrix[y][x-1] {
+	if x > 0 && matrix[y][x-1] {
 		litCount++
 	}
 	//center right
-	if x<len(matrix[y])-1 && matrix[y][x+1] {
+	if x < len(matrix[y])-1 && matrix[y][x+1] {
 		litCount++
 	}
 
 	//Row Below
 
-	if y< len(matrix)-1 {
+	if y < len(matrix)-1 {
 		//below left
-		if x>0 && matrix[y+1][x-1] {
+		if x > 0 && matrix[y+1][x-1] {
 			litCount++
 		}
 		//below center
@@ -83,7 +83,7 @@ func getNextCellState(x,y int, matrix [][]bool) bool {
 			litCount++
 		}
 		//below right
-		if x<len(matrix[y])-1 && matrix[y+1][x+1] {
+		if x < len(matrix[y])-1 && matrix[y+1][x+1] {
 			litCount++
 		}
 	}
@@ -91,7 +91,7 @@ func getNextCellState(x,y int, matrix [][]bool) bool {
 	if matrix[y][x] {
 		return litCount == 2 || litCount == 3
 	} else {
-		return litCount ==3
+		return litCount == 3
 	}
 
 }
@@ -100,7 +100,7 @@ func getLitCount(matrix [][]bool) int {
 
 	litCount := 0
 
-	for y := 0; y <len(matrix); y++ {
+	for y := 0; y < len(matrix); y++ {
 		for x := 0; x < len(matrix[y]); x++ {
 			if matrix[y][x] {
 				litCount++
@@ -125,7 +125,7 @@ func DayEighteenPartOne() {
 
 	matrix := parseMatrix(input)
 
-	for i:=0; i < 100; i++ {
+	for i := 0; i < 100; i++ {
 		matrix = animateMatrix(matrix)
 	}
 
@@ -140,7 +140,7 @@ func DayEighteenPartTwo() {
 
 	matrix := parseMatrix(input)
 
-	for i:=0; i < 100; i++ {
+	for i := 0; i < 100; i++ {
 		matrix = animateMatrix(matrix)
 
 		matrix[0][0] = true

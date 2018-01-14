@@ -2,13 +2,13 @@ package adventofcode2015
 
 import (
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 type ingredient struct {
-	name string
-	capacity,durability, flavor, texture, calories int
+	name                                            string
+	capacity, durability, flavor, texture, calories int
 }
 
 func parseIngredient(input string) ingredient {
@@ -22,7 +22,7 @@ func parseIngredient(input string) ingredient {
 	texture, _ := strconv.Atoi(ingredientParts[8][:len(ingredientParts[8])-1])
 	calories, _ := strconv.Atoi(ingredientParts[10])
 
-	return ingredient{name,capacity,durability,flavour,texture,calories}
+	return ingredient{name, capacity, durability, flavour, texture, calories}
 }
 
 func getRecipeScore(recipeMap map[ingredient]int) int {
@@ -32,7 +32,7 @@ func getRecipeScore(recipeMap map[ingredient]int) int {
 	flavScore := 0
 	texScore := 0
 
-	for key,value := range recipeMap {
+	for key, value := range recipeMap {
 		capScore += value * key.capacity
 		durScore += value * key.durability
 		flavScore += value * key.flavor
@@ -47,7 +47,7 @@ func getRecipeScore(recipeMap map[ingredient]int) int {
 		durScore = 0
 	}
 
-	if flavScore <0 {
+	if flavScore < 0 {
 		flavScore = 0
 	}
 
@@ -62,7 +62,7 @@ func getRecipeCalories(recipeMap map[ingredient]int) int {
 
 	calorieScore := 0
 
-	for key,value := range recipeMap {
+	for key, value := range recipeMap {
 		calorieScore += value * key.calories
 	}
 
@@ -77,7 +77,7 @@ func DayFifteenExample() {
 
 	ingredients := strings.Split(input, "\n")
 
-	ingredientList := make([]ingredient,len(ingredients))
+	ingredientList := make([]ingredient, len(ingredients))
 	for i := 0; i < len(ingredients); i++ {
 
 		ingredient := parseIngredient(ingredients[i])
@@ -89,10 +89,10 @@ func DayFifteenExample() {
 	maxIngredientCount := 100
 
 	maxScore := 0
-	for i := 0; i <= maxIngredientCount ; i++ {
+	for i := 0; i <= maxIngredientCount; i++ {
 		remainingIngredientCount := maxIngredientCount - i
 
-		for j:=0; j<= remainingIngredientCount; j++ {
+		for j := 0; j <= remainingIngredientCount; j++ {
 			recipe := make(map[ingredient]int)
 
 			recipe[ingredientList[0]] = i
@@ -109,7 +109,6 @@ func DayFifteenExample() {
 	fmt.Println("Score:", maxScore)
 }
 
-
 func DayFifteenPartOne() {
 
 	fmt.Println("Day 15 - Part One")
@@ -118,7 +117,7 @@ func DayFifteenPartOne() {
 
 	ingredients := strings.Split(input, "\n")
 
-	ingredientList := make([]ingredient,len(ingredients))
+	ingredientList := make([]ingredient, len(ingredients))
 	for i := 0; i < len(ingredients); i++ {
 
 		ingredient := parseIngredient(ingredients[i])
@@ -131,16 +130,16 @@ func DayFifteenPartOne() {
 
 	maxScore := 0
 
-	for i := 0; i <= maxIngredientCount ; i++ {
+	for i := 0; i <= maxIngredientCount; i++ {
 		remainingIngredientCount1 := maxIngredientCount - i
 
-		for j:=0; j<= remainingIngredientCount1; j++ {
-			remainingIngredientCount2:= remainingIngredientCount1 -j
+		for j := 0; j <= remainingIngredientCount1; j++ {
+			remainingIngredientCount2 := remainingIngredientCount1 - j
 
 			for k := 0; k <= remainingIngredientCount2; k++ {
 				remainingIngredientCount3 := remainingIngredientCount2 - k
 
-				for l :=0; l <= remainingIngredientCount3; l++ {
+				for l := 0; l <= remainingIngredientCount3; l++ {
 
 					recipe := make(map[ingredient]int)
 
@@ -162,7 +161,6 @@ func DayFifteenPartOne() {
 	fmt.Println("Score:", maxScore)
 }
 
-
 func DayFifteenPartTwo() {
 
 	fmt.Println("Day 15 - Part Two")
@@ -171,7 +169,7 @@ func DayFifteenPartTwo() {
 
 	ingredients := strings.Split(input, "\n")
 
-	ingredientList := make([]ingredient,len(ingredients))
+	ingredientList := make([]ingredient, len(ingredients))
 	for i := 0; i < len(ingredients); i++ {
 
 		ingredient := parseIngredient(ingredients[i])
@@ -184,16 +182,16 @@ func DayFifteenPartTwo() {
 
 	maxScore := 0
 
-	for i := 0; i <= maxIngredientCount ; i++ {
+	for i := 0; i <= maxIngredientCount; i++ {
 		remainingIngredientCount1 := maxIngredientCount - i
 
-		for j:=0; j<= remainingIngredientCount1; j++ {
-			remainingIngredientCount2:= remainingIngredientCount1 -j
+		for j := 0; j <= remainingIngredientCount1; j++ {
+			remainingIngredientCount2 := remainingIngredientCount1 - j
 
 			for k := 0; k <= remainingIngredientCount2; k++ {
 				remainingIngredientCount3 := remainingIngredientCount2 - k
 
-				for l :=0; l <= remainingIngredientCount3; l++ {
+				for l := 0; l <= remainingIngredientCount3; l++ {
 
 					recipe := make(map[ingredient]int)
 

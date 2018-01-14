@@ -33,17 +33,17 @@ func DaySixteenPartOne() {
 	sueList := strings.Split(input, "\n")
 
 	matchName := ""
-	for k := 0 ; k < len(sueList); k++ {
+	for k := 0; k < len(sueList); k++ {
 
 		sue := sueList[k]
 		name := sue[0:strings.Index(sue, ":")]
-		match := true 
+		match := true
 
 		for present, count := range mfcsamMap {
 
 			if strings.Contains(sue, present) {
-				if !strings.Contains(sue, fmt.Sprintf("%s: %d", present, count)){
-					match =  false
+				if !strings.Contains(sue, fmt.Sprintf("%s: %d", present, count)) {
+					match = false
 					break
 				}
 			}
@@ -85,32 +85,32 @@ func DaySixteenPartTwo() {
 	sueList := strings.Split(input, "\n")
 
 	matchName := ""
-	for k := 0 ; k < len(sueList); k++ {
+	for k := 0; k < len(sueList); k++ {
 
 		sue := sueList[k]
 		name := sue[0:strings.Index(sue, ":")]
-		presentList := strings.Split(sue[len(name) + 2:],",")
+		presentList := strings.Split(sue[len(name)+2:], ",")
 		suePresentMap := buildPresentMap(presentList)
 
 		match := true
 
 		for present, count := range mfcsamMap {
 
-			if  value, exists := suePresentMap[present] ; exists {
+			if value, exists := suePresentMap[present]; exists {
 				if present == "cats" || present == "trees" {
 					if value <= count {
 						match = false
 						break
 					}
 
-				} else if  present == "pomeranians" || present == "goldfish" {
+				} else if present == "pomeranians" || present == "goldfish" {
 					if value >= count {
 						match = false
 						break
 					}
 				} else {
 					if value != count {
-						match =  false
+						match = false
 						break
 					}
 				}
