@@ -68,19 +68,16 @@ func doTurn(attacker,defender magicCharacter, attackerEffects,defenderEffects ma
 			spell.duration -= 1
 			attackerEffects[name] = spell
 
-			if spell.duration > 0 {
-				attacker.hitPoints += spell.healing
-				attacker.mana += spell.recharge
-				defender.hitPoints -= spell.damage
+			attacker.hitPoints += spell.healing
+			attacker.mana += spell.recharge
+			defender.hitPoints -= spell.damage
 
-				if defender.hitPoints <= 0 {
+			if defender.hitPoints <= 0 {
 
-					if manaSpent < minManaSpent {
-						minManaSpent = manaSpent
-						fmt.Println("min mana:", minManaSpent)
-					}
-					return
+				if manaSpent < minManaSpent {
+					minManaSpent = manaSpent
 				}
+				return
 			}
 		} else {
 			delete(attackerEffects, name)
@@ -95,20 +92,18 @@ func doTurn(attacker,defender magicCharacter, attackerEffects,defenderEffects ma
 			spell := defenderEffects[name]
 			spell.duration -= 1
 			defenderEffects[name] = spell
-
 			defender.hitPoints += spell.healing
 			defender.mana += spell.recharge
 			attacker.hitPoints -= spell.damage
+			defenderArmourModifier = spell.armour
 
 			if attacker.hitPoints <= 0 {
 
 				if manaSpent < minManaSpent {
 					minManaSpent = manaSpent
-					fmt.Println("min mana:", minManaSpent)
 				}
 				return
 			}
-			defenderArmourModifier = spell.armour
 		} else {
 			delete(defenderEffects,name)
 		}
@@ -117,11 +112,13 @@ func doTurn(attacker,defender magicCharacter, attackerEffects,defenderEffects ma
 
 		for i:=0; i< len(availableSpells); i++ {
 			spellToTry := availableSpells[i]
+			spellCount := 0
 			if _,ok := attackerEffects[spellToTry.name]; !ok && attacker.mana >= spellToTry.cost {
-
+				spellCount++
 				nextAttacker := defender
 				nextDefender := attacker
 
+				nextDefender.mana -= spellToTry.cost
 				if spellToTry.duration == 0 {
 
 					nextAttacker.hitPoints -= spellToTry.damage
@@ -134,6 +131,7 @@ func doTurn(attacker,defender magicCharacter, attackerEffects,defenderEffects ma
 
 				doTurn(nextAttacker,nextDefender,newDefenderEffects,newAttackerEffects,availableSpells,manaSpent+spellToTry.cost)
 			}
+
 		}
 	} else {
 		attackerDamage := attacker.damage
@@ -149,7 +147,13 @@ func doTurn(attacker,defender magicCharacter, attackerEffects,defenderEffects ma
 			//return
 		}
 
-		doTurn(defender,attacker,defenderEffects,attackerEffects,availableSpells,manaSpent)
+		nextAttacker := defender
+		nextDefender := attacker
+
+		newAttackerEffects := copySpellMap(attackerEffects)
+		newDefenderEffects := copySpellMap(defenderEffects)
+
+		doTurn(nextAttacker,nextDefender,newDefenderEffects,newAttackerEffects,availableSpells,manaSpent)
 	}
 }
 
@@ -193,7 +197,7 @@ func DayTwentyTwoPartOne() {
 	recharge := spell{name: "Recharge", cost: 229, duration: 5, recharge: 101}
 
 	spells := []spell{magicMissile, drain, shield, poison, recharge}
-
+//	spells = []spell{magicMissile,recharge}
 	fmt.Println(spells)
 
 	player := magicCharacter{50, 500, 0,true}
