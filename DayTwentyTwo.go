@@ -35,138 +35,13 @@ func copySpellMap(spellMap map[string]spell) map[string]spell {
 
 var minManaSpent int = 100000
 
-func doTurn(attacker,defender magicCharacter, attackerEffects,defenderEffects map[string]spell, availableSpells []spell,manaSpent int) {
+func doTurn(attacker,defender magicCharacter, attackerEffects,defenderEffects map[string]spell, availableSpells []spell,manaSpent int, hardMode bool) {
 
-	if attacker.hitPoints <= 0 || defender.hitPoints <= 0 {
-
-		var deadCharacter magicCharacter
-		if attacker.hitPoints <=0{
-			deadCharacter = attacker
-		} else {
-			deadCharacter = defender
-		}
-
-		if !deadCharacter.canDoMagic {
-
-			if manaSpent < minManaSpent {
-				minManaSpent = manaSpent
-				fmt.Println("MinManaSpent:",minManaSpent)
-			}
-		}
-
+	if manaSpent > minManaSpent {
 		return
 	}
 
-	//DO attack stuff
-
-	defenderArmourModifier := 0
-	for name, attackerSpell := range attackerEffects {
-
-		if attackerSpell.duration > 0 {
-			attackerSpell.duration -= 1
-			spell := attackerEffects[name]
-			spell.duration -= 1
-			attackerEffects[name] = spell
-
-			attacker.hitPoints += spell.healing
-			attacker.mana += spell.recharge
-			defender.hitPoints -= spell.damage
-
-			if defender.hitPoints <= 0 {
-
-				if manaSpent < minManaSpent {
-					minManaSpent = manaSpent
-				}
-				return
-			}
-			if spell.duration == 0 {
-				delete(attackerEffects,name)
-			}
-		} else {
-			delete(attackerEffects, name)
-		}
-	}
-
-	for name, defenderSpell := range defenderEffects {
-
-		if defenderSpell.duration > 0 {
-			defenderSpell.duration -= 1
-
-			spell := defenderEffects[name]
-			spell.duration -= 1
-			defenderEffects[name] = spell
-			defender.hitPoints += spell.healing
-			defender.mana += spell.recharge
-			attacker.hitPoints -= spell.damage
-			defenderArmourModifier = spell.armour
-
-			if attacker.hitPoints <= 0 {
-
-				if manaSpent < minManaSpent {
-					minManaSpent = manaSpent
-				}
-				return
-			}
-
-			if spell.duration == 0 {
-				delete(defenderEffects,name)
-			}
-		} else {
-			delete(defenderEffects,name)
-		}
-	}
-	if attacker.canDoMagic {
-
-		for i:=0; i< len(availableSpells); i++ {
-			spellToTry := availableSpells[i]
-			spellCount := 0
-			if _,ok := attackerEffects[spellToTry.name]; !ok && attacker.mana >= spellToTry.cost {
-				spellCount++
-				nextAttacker := defender
-				nextDefender := attacker
-
-				nextDefender.mana -= spellToTry.cost
-				if spellToTry.duration == 0 {
-
-					nextAttacker.hitPoints -= spellToTry.damage
-					nextDefender.hitPoints += spellToTry.healing
-				}
-				newAttackerEffects := copySpellMap(attackerEffects)
-				newDefenderEffects := copySpellMap(defenderEffects)
-
-				newAttackerEffects[spellToTry.name] = spellToTry
-
-				doTurn(nextAttacker,nextDefender,newDefenderEffects,newAttackerEffects,availableSpells,manaSpent+spellToTry.cost)
-			}
-
-		}
-	} else {
-		attackerDamage := attacker.damage
-
-		attackerDamage -= defenderArmourModifier
-
-		if attackerDamage < 1 {
-			attackerDamage = 1
-		}
-
-		defender.hitPoints -= attackerDamage
-		if defender.hitPoints <= 0 {
-			//return
-		}
-
-		nextAttacker := defender
-		nextDefender := attacker
-
-		newAttackerEffects := copySpellMap(attackerEffects)
-		newDefenderEffects := copySpellMap(defenderEffects)
-
-		doTurn(nextAttacker,nextDefender,newDefenderEffects,newAttackerEffects,availableSpells,manaSpent)
-	}
-}
-
-func doTurnHardMode(attacker,defender magicCharacter, attackerEffects,defenderEffects map[string]spell, availableSpells []spell,manaSpent int) {
-
-	if attacker.canDoMagic {
+	if hardMode && attacker.canDoMagic {
 		attacker.hitPoints -= 1
 		if attacker.hitPoints <=0 {
 			return
@@ -184,13 +59,11 @@ func doTurnHardMode(attacker,defender magicCharacter, attackerEffects,defenderEf
 		if !deadCharacter.canDoMagic {
 			if manaSpent < minManaSpent {
 				minManaSpent = manaSpent
-				fmt.Println("MinManaSpent:",minManaSpent)
 			}
 		}
 
 		return
 	}
-
 
 	//DO attack stuff
 
@@ -232,7 +105,7 @@ func doTurnHardMode(attacker,defender magicCharacter, attackerEffects,defenderEf
 			defender.hitPoints += spell.healing
 			defender.mana += spell.recharge
 			attacker.hitPoints -= spell.damage
-			defenderArmourModifier = spell.armour
+			defenderArmourModifier += spell.armour
 
 			if attacker.hitPoints <= 0 {
 
@@ -270,7 +143,7 @@ func doTurnHardMode(attacker,defender magicCharacter, attackerEffects,defenderEf
 
 				newAttackerEffects[spellToTry.name] = spellToTry
 
-				doTurnHardMode(nextAttacker,nextDefender,newDefenderEffects,newAttackerEffects,availableSpells,manaSpent+spellToTry.cost)
+				doTurn(nextAttacker,nextDefender,newDefenderEffects,newAttackerEffects,availableSpells,manaSpent+spellToTry.cost, hardMode)
 			}
 
 		}
@@ -294,7 +167,7 @@ func doTurnHardMode(attacker,defender magicCharacter, attackerEffects,defenderEf
 		newAttackerEffects := copySpellMap(attackerEffects)
 		newDefenderEffects := copySpellMap(defenderEffects)
 
-		doTurnHardMode(nextAttacker,nextDefender,newDefenderEffects,newAttackerEffects,availableSpells,manaSpent)
+		doTurn(nextAttacker,nextDefender,newDefenderEffects,newAttackerEffects,availableSpells,manaSpent, hardMode)
 	}
 }
 
@@ -321,7 +194,7 @@ func DayTwentyTwoExample() {
 	playerEffects := make(map[string]spell)
 	bossEffects := make(map[string]spell)
 
-	doTurn(player,boss,playerEffects,bossEffects,spells,0)
+	doTurn(player,boss,playerEffects,bossEffects,spells,0, false)
 
 	fmt.Println("Min mana spent:", minManaSpent)
 }
@@ -349,7 +222,7 @@ func DayTwentyTwoPartOne() {
 	playerEffects := make(map[string]spell)
 	bossEffects := make(map[string]spell)
 
-	doTurn(player,boss,playerEffects,bossEffects,spells,0)
+	doTurn(player,boss,playerEffects,bossEffects,spells,0, false)
 
 	fmt.Println("Min mana spent:", minManaSpent)
 }
@@ -377,7 +250,7 @@ func DayTwentyTwoPartTwo() {
 	playerEffects := make(map[string]spell)
 	bossEffects := make(map[string]spell)
 
-	doTurnHardMode(player,boss,playerEffects,bossEffects,spells,0)
+	doTurn(player,boss,playerEffects,bossEffects,spells,0, true)
 
 	fmt.Println("Min mana spent:", minManaSpent)
 }
