@@ -40,9 +40,22 @@ func processInstructions(registers map[string]int, instructions []string) {
 				if getRegisterValue(registers,register) == 1 {
 					incValue = getRegisterValue(registers,instructionParts[2])
 				}
+			case "jie":
+				register := instructionParts[1]
+				if getRegisterValue(registers,register) % 2 == 0 {
+					incValue = getRegisterValue(registers,instructionParts[2])
+				}
 			case "tpl":
 				register := instructionParts[1]
 				registers[register] = getRegisterValue(registers,register) * 3
+
+			case "hlf":
+				register := instructionParts[1]
+				registers[register] = getRegisterValue(registers,register) / 2
+
+			case "jmp":
+				value, _ := strconv.Atoi(instructionParts[1])
+				incValue = value
 			default:
 				fmt.Println(opCode)
 		}
