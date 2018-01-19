@@ -96,3 +96,19 @@ func DayTwentyThreePartOne() {
 
 	fmt.Println(registers)
 }
+
+func DayTwentyThreePartTwo() {
+
+	fmt.Println("Day 23 - Part Two")
+
+	input := ReadFile("day23-input.txt") 
+	instructions := strings.Split(input, "\n")
+
+	registers := make(map[string]int)
+	registers["a"] = 1
+	registers["b"] = 0
+
+	processInstructions(registers,instructions)
+
+	fmt.Println(registers)
+}
