@@ -7,6 +7,17 @@ import (
 	"sort"
 )
 
+func getCombinationsForLength(availableBoxes []int, targetLength int) map[string][]int {
+	combinationMap := make(map[string][]int)
+
+	for i:=0;i<len(availableBoxes);i++ {
+
+
+	}
+
+	return combinationMap
+}
+
 func buildCombinations(availableBoxes []int, targetWeight int) [][]int {
 	combinations := make([][]int,0)
 
@@ -126,6 +137,7 @@ func reduceCombinations(combinations[][]int) map[string][]int {
 	}
 	return combinMap
 }
+
 func getMinQE(boxes []int, combinationTarget int) int {
 
 	combinations := buildCombinations(boxes, combinationTarget)
@@ -188,6 +200,39 @@ func DayTwentyFourExample() {
 }
 
 func DayTwentyFourPartOne() {
+
+	fmt.Println("Day 24 - Part One - Take 2")
+
+
+	input := strings.Split(ReadFile("day24-input.txt"),"\n")
+
+	boxes := make([]int, len(input))
+
+	for i:=0; i<len(input); i++ {
+
+		value,_ := strconv.Atoi(input[i])
+		boxes[i] = value
+	}
+
+	fmt.Println(boxes)
+
+	totalWeight := 0
+
+	for i :=0; i <len(boxes); i++ {
+		totalWeight += boxes[i]
+	}
+
+	fmt.Println("total Weight:", totalWeight)
+
+	combinationTarget := totalWeight / 3
+	fmt.Println("Combination target:", combinationTarget)
+
+	combinations := getCombinationsForLength(boxes,1)
+
+	fmt.Println(combinations)
+}
+
+func DayTwentyFourPartOneOriginal() {
 
 	fmt.Println("Day 24 - Part 1")
 
