@@ -7,14 +7,53 @@ import (
 	"sort"
 )
 
+var comboCache map[int]map[string]map[string][]int = make(map[int]map[string]map[string][]int)
+
 func getCombinationsForLength(availableBoxes []int, targetLength int) map[string][]int {
+	sort.Ints(availableBoxes[:])
+
+	if targetLengthCache,ok := comboCache[targetLength]; ok {
+
+		if combos,ok1 := targetLengthCache[getMapKey(availableBoxes)]; ok1 {
+			return combos
+		}
+	}
 	combinationMap := make(map[string][]int)
 
+	remainingLength := targetLength -1
 	for i:=0;i<len(availableBoxes);i++ {
 
+		if remainingLength > 0 {
+			remainingBoxes := make([]int,len(availableBoxes))
+			copy(remainingBoxes, availableBoxes)
 
+			remainingBoxes = append(remainingBoxes[:i], remainingBoxes[i+1:]...)
+			nextCombos := getCombinationsForLength(remainingBoxes, remainingLength)
+
+			for _,combo := range nextCombos {
+				combination := make([]int,1)
+				combination[0] = availableBoxes[i]
+				combination = append(combination,combo...)
+				sort.Ints(combination[:])
+				combinationMap[getMapKey(combination)] = combination
+			}
+		} else {
+			combination := make([]int,1)
+			combination[0] = availableBoxes[i]
+			sort.Ints(combination[:])
+			combinationMap[getMapKey(combination)] = combination
+		}
 	}
 
+	if lengthCache,ok := comboCache[targetLength]; ok {
+		lengthCache[getMapKey(availableBoxes)] = combinationMap
+		comboCache[targetLength] = lengthCache
+
+	} else {
+		lengthCache = make(map[string]map[string][]int)
+		lengthCache[getMapKey(availableBoxes)] = combinationMap
+		comboCache[targetLength] = lengthCache
+	}
 	return combinationMap
 }
 
@@ -119,7 +158,7 @@ func getMapKey(boxes []int) string {
 
 	for i:=0;i<len(boxes);i++ {
 		key += strconv.Itoa( boxes[i])
-
+		key += ","
 	}
 
 	key += "]"
@@ -227,9 +266,11 @@ func DayTwentyFourPartOne() {
 	combinationTarget := totalWeight / 3
 	fmt.Println("Combination target:", combinationTarget)
 
-	combinations := getCombinationsForLength(boxes,1)
+	combinations := getCombinationsForLength(boxes,12)
 
-	fmt.Println(combinations)
+	for key,value := range combinations {
+		fmt.Println(key,": ", value)
+	}
 }
 
 func DayTwentyFourPartOneOriginal() {
