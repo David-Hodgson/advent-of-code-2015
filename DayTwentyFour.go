@@ -7,6 +7,57 @@ import (
 	"sort"
 )
 
+func getBoxesTotalWeight(boxes []int) int {
+	totalWeight := 0
+
+	for i :=0; i <len(boxes); i++ {
+		totalWeight += boxes[i]
+	}
+
+	return totalWeight
+}
+
+//Think max size of this set is 2248
+var validComboMap map[string][]int = make(map[string][]int)
+
+func buildBoxCombinationsToWardsTarget(currentCombo, boxes []int, currentWeight, targetWeight int) [][]int{
+
+	combinations := make([][]int,0)
+	sort.Ints(boxes[:])
+
+	for i:= len(boxes)-1; i>=0; i-- {
+		if currentWeight + boxes[i] > targetWeight {
+			continue
+		}
+
+		remainingBoxes := make([]int,len(boxes))
+		copy(remainingBoxes, boxes)
+		remainingBoxes = append(remainingBoxes[:i], remainingBoxes[i+1:]...)
+
+		newCombo := make([]int,len(currentCombo)+1)
+		copy(newCombo, currentCombo)
+		newCombo[len(currentCombo)] = boxes[i]
+
+		newWeight := currentWeight + boxes[i]
+		weightDiff := targetWeight - newWeight
+
+		if newWeight == targetWeight {
+			sort.Ints(newCombo)
+			//fmt.Println("Found a combination:", newCombo)
+			validComboMap[getMapKey(newCombo)] = newCombo
+			fmt.Println("Valid combo count:",len(validComboMap))
+			combinations = append(combinations, newCombo)
+		} else if weightDiff > getBoxesTotalWeight(remainingBoxes) {
+			continue
+		}else {
+			otherCombos := buildBoxCombinationsToWardsTarget(newCombo, remainingBoxes, newWeight, targetWeight)
+			combinations = append(combinations, otherCombos...)
+		}
+	}
+
+	return combinations
+}
+
 var comboCache map[int]map[string]map[string][]int = make(map[int]map[string]map[string][]int)
 
 func getCombinationsForLength(availableBoxes []int, targetLength int) map[string][]int {
@@ -242,19 +293,22 @@ func DayTwentyFourPartOne() {
 
 	fmt.Println("Day 24 - Part One - Take 2")
 
-
 	input := strings.Split(ReadFile("day24-input.txt"),"\n")
 
 	boxes := make([]int, len(input))
 
 	for i:=0; i<len(input); i++ {
 
-		value,_ := strconv.Atoi(input[i])
+		value,err := strconv.Atoi(input[i])
+
+		if err != nil {
+			fmt.Println(err)
+		}
 		boxes[i] = value
 	}
 
 	fmt.Println(boxes)
-
+	fmt.Println("Number of boxes:", len(boxes))
 	totalWeight := 0
 
 	for i :=0; i <len(boxes); i++ {
@@ -266,10 +320,12 @@ func DayTwentyFourPartOne() {
 	combinationTarget := totalWeight / 3
 	fmt.Println("Combination target:", combinationTarget)
 
-	combinations := getCombinationsForLength(boxes,12)
+	var emptyCombo =[]int {}
 
-	for key,value := range combinations {
-		fmt.Println(key,": ", value)
+	combinations := buildBoxCombinationsToWardsTarget(emptyCombo,boxes,0,combinationTarget)
+
+	for value := range combinations {
+		fmt.Println(value)
 	}
 }
 
