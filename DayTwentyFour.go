@@ -23,6 +23,11 @@ var validComboMap map[string][]int = make(map[string][]int)
 func buildBoxCombinationsToWardsTarget(currentCombo, boxes []int, currentWeight, targetWeight int) [][]int{
 
 	combinations := make([][]int,0)
+
+	//if len(validComboMap) == 2248 {
+	//	return combinations
+	//}
+
 	sort.Ints(boxes[:])
 
 	for i:= len(boxes)-1; i>=0; i-- {
@@ -45,7 +50,9 @@ func buildBoxCombinationsToWardsTarget(currentCombo, boxes []int, currentWeight,
 			sort.Ints(newCombo)
 			//fmt.Println("Found a combination:", newCombo)
 			validComboMap[getMapKey(newCombo)] = newCombo
-			fmt.Println("Valid combo count:",len(validComboMap))
+			if len(validComboMap) > 2000 {
+				fmt.Println("valid combos:", len(validComboMap))
+			}
 			combinations = append(combinations, newCombo)
 		} else if weightDiff > getBoxesTotalWeight(remainingBoxes) {
 			continue
@@ -266,6 +273,72 @@ func getMinQE(boxes []int, combinationTarget int) int {
 	return minQE
 }
 
+func doCombinationsOverlap(set1, set2 []int) bool {
+
+	overlap := false
+
+	fmt.Println("Comparing sets")
+	fmt.Println("\tSet1:", set1)
+	fmt.Println("\tSet2:", set2)
+
+	for i :=0; i<len(set1) && !overlap; i++ {
+		for j:=0;j<len(set2) && !overlap;j++ {
+
+			if set1[i]== set2[j] {
+				overlap = true
+				break
+			}
+		}
+	}
+
+	return overlap
+}
+
+func getMinQEFromValidCombos(combinations [][]int) int {
+
+	minQE := -1
+	smallestSetSize := 28
+
+	for i:=0; i<len(combinations);i++ {
+		set1 := combinations[i]
+
+		for j:=0; j<len(combinations); j++ {
+			set2 := combinations[j]
+			if i==j || doCombinationsOverlap(set1,set2){
+				continue
+			}
+
+			fmt.Println("Found 2 distinct sets")
+			fmt.Println(set1)
+			fmt.Println(set2)
+
+			for k:=0;k<len(combinations); k++ {
+				set3 := combinations[k]
+				if k==i || k==j || doCombinationsOverlap(set1,set3) || doCombinationsOverlap(set2, set3) {
+					continue
+				}
+
+				fmt.Println("Found 3 distnct sets")
+				fmt.Println(set3)
+				size,qe := getSmallestSet(set1,set2,set3)
+
+				fmt.Println("minSize:", size)
+				fmt.Println("minQE:", qe)
+				if size < smallestSetSize {
+					smallestSetSize = size
+					minQE = qe
+				} else if size == smallestSetSize {
+					if minQE == -1 || qe < minQE {
+						minQE = qe
+					}
+				}
+			}
+		}
+	}
+
+	return minQE
+}
+
 func DayTwentyFourExample() {
 
 	fmt.Println("Day 24 - Example")
@@ -322,11 +395,20 @@ func DayTwentyFourPartOne() {
 
 	var emptyCombo =[]int {}
 
-	combinations := buildBoxCombinationsToWardsTarget(emptyCombo,boxes,0,combinationTarget)
-
-	for value := range combinations {
-		fmt.Println(value)
+	fmt.Println("Generating combinations")
+	buildBoxCombinationsToWardsTarget(emptyCombo,boxes,0,combinationTarget)
+	fmt.Println("Combination generatation done")
+	validCombos := make([][]int,len(validComboMap))
+	pos := 0
+	for _,combo := range validComboMap {
+		validCombos[pos] = combo
+		pos++
 	}
+
+	fmt.Println("Getting minimun QE")
+	minQE := getMinQEFromValidCombos(validCombos)
+	fmt.Println("Min QE:", minQE)
+	fmt.Println("Finished")
 }
 
 func DayTwentyFourPartOneOriginal() {
