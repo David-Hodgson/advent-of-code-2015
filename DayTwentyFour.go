@@ -37,7 +37,7 @@ func buildBoxCombinationsToWardsTarget(currentCombo, boxes []int, currentWeight,
 
 		remainingBoxes := make([]int,len(boxes))
 		copy(remainingBoxes, boxes)
-		remainingBoxes = append(remainingBoxes[:i], remainingBoxes[i+1:]...)
+		remainingBoxes = remainingBoxes[i+1:]
 
 		newCombo := make([]int,len(currentCombo)+1)
 		copy(newCombo, currentCombo)
@@ -50,9 +50,6 @@ func buildBoxCombinationsToWardsTarget(currentCombo, boxes []int, currentWeight,
 			sort.Ints(newCombo)
 			//fmt.Println("Found a combination:", newCombo)
 			validComboMap[getMapKey(newCombo)] = newCombo
-			if len(validComboMap) > 2000 {
-				fmt.Println("valid combos:", len(validComboMap))
-			}
 			combinations = append(combinations, newCombo)
 		} else if weightDiff > getBoxesTotalWeight(remainingBoxes) {
 			continue
@@ -168,7 +165,7 @@ func stripUsedBoxes(allBoxes,usedBoxes []int) []int{
 	return unusedBoxes
 }
 
-func getSmallestSet(set1,set2,set3 []int) (size,qe int) {
+func getSmallestSet(set1,set2,set3 []int) (size int,qe int64) {
 
 	size1 := len(set1)
 	qe1 := getQE(set1)
@@ -201,11 +198,11 @@ func getSmallestSet(set1,set2,set3 []int) (size,qe int) {
 	return minSize,qe
 }
 
-func getQE(boxes []int) int {
-	qe := 1
+func getQE(boxes []int) int64 {
+	var qe int64 = 1
 
 	for i:=0; i<len(boxes); i++ {
-		qe *= boxes[i]
+		qe *=int64(boxes[i])
 	}
 
 	return qe
@@ -235,12 +232,12 @@ func reduceCombinations(combinations[][]int) map[string][]int {
 	return combinMap
 }
 
-func getMinQE(boxes []int, combinationTarget int) int {
+func getMinQE(boxes []int, combinationTarget int) int64 {
 
 	combinations := buildCombinations(boxes, combinationTarget)
 	combo1Map := reduceCombinations(combinations)
 	fmt.Println("First level count:", len(combo1Map))
-	minQE := -1
+	var minQE int64 = -1
 	smallestSetSize := len(boxes)
 	for _,combo1 := range combo1Map {
 		set1 := combo1
@@ -277,10 +274,6 @@ func doCombinationsOverlap(set1, set2 []int) bool {
 
 	overlap := false
 
-	fmt.Println("Comparing sets")
-	fmt.Println("\tSet1:", set1)
-	fmt.Println("\tSet2:", set2)
-
 	for i :=0; i<len(set1) && !overlap; i++ {
 		for j:=0;j<len(set2) && !overlap;j++ {
 
@@ -294,42 +287,38 @@ func doCombinationsOverlap(set1, set2 []int) bool {
 	return overlap
 }
 
-func getMinQEFromValidCombos(combinations [][]int) int {
+func getMinQEFromValidCombos(combinations [][]int) int64 {
 
-	minQE := -1
+	var minQE int64 = -1
 	smallestSetSize := 28
 
 	for i:=0; i<len(combinations);i++ {
 		set1 := combinations[i]
 
-		for j:=0; j<len(combinations); j++ {
-			set2 := combinations[j]
+		combinations2 := combinations[i+1:]
+		for j:=0; j<len(combinations2); j++ {
+			set2 := combinations2[j]
 			if i==j || doCombinationsOverlap(set1,set2){
 				continue
 			}
 
-			fmt.Println("Found 2 distinct sets")
-			fmt.Println(set1)
-			fmt.Println(set2)
-
-			for k:=0;k<len(combinations); k++ {
-				set3 := combinations[k]
+			combinations3 := combinations2[j+1:]
+			for k:=0;k<len(combinations3); k++ {
+				set3 := combinations3[k]
 				if k==i || k==j || doCombinationsOverlap(set1,set3) || doCombinationsOverlap(set2, set3) {
 					continue
 				}
 
-				fmt.Println("Found 3 distnct sets")
-				fmt.Println(set3)
 				size,qe := getSmallestSet(set1,set2,set3)
 
-				fmt.Println("minSize:", size)
-				fmt.Println("minQE:", qe)
 				if size < smallestSetSize {
 					smallestSetSize = size
 					minQE = qe
+					fmt.Println("Min QE:", minQE)
 				} else if size == smallestSetSize {
 					if minQE == -1 || qe < minQE {
 						minQE = qe
+						fmt.Println("Min QE:", minQE)
 					}
 				}
 			}
