@@ -17,16 +17,11 @@ func getBoxesTotalWeight(boxes []int) int {
 	return totalWeight
 }
 
-//Think max size of this set is 2248
 var validComboMap map[string][]int = make(map[string][]int)
 
 func buildBoxCombinationsToWardsTarget(currentCombo, boxes []int, currentWeight, targetWeight int) [][]int{
 
 	combinations := make([][]int,0)
-
-	//if len(validComboMap) == 2248 {
-	//	return combinations
-	//}
 
 	sort.Ints(boxes[:])
 
@@ -48,7 +43,6 @@ func buildBoxCombinationsToWardsTarget(currentCombo, boxes []int, currentWeight,
 
 		if newWeight == targetWeight {
 			sort.Ints(newCombo)
-			//fmt.Println("Found a combination:", newCombo)
 			validComboMap[getMapKey(newCombo)] = newCombo
 			combinations = append(combinations, newCombo)
 		} else if weightDiff > getBoxesTotalWeight(remainingBoxes) {
@@ -163,6 +157,49 @@ func stripUsedBoxes(allBoxes,usedBoxes []int) []int{
 	}
 
 	return unusedBoxes
+}
+
+func getSmallestSetPartTwo(set1,set2,set3,set4 []int) (size int,qe int64) {
+
+	size1 := len(set1)
+	qe1 := getQE(set1)
+	size2 := len(set2)
+	qe2 := getQE(set2)
+	size3 := len(set3)
+	qe3 := getQE(set3)
+	size4 := len(set4)
+	qe4 := getQE(set4)
+
+	minSize := size1
+	qe = qe1
+
+	if size2 < minSize {
+		minSize = size2
+		qe = qe2
+	} else if size2 == minSize {
+		if qe2 < qe {
+			qe = qe2
+		}
+	}
+
+	if size3 < minSize {
+		minSize = size3
+		qe = qe3
+	} else if size3 == minSize {
+		if qe3 < qe {
+			qe = qe3
+		}
+	}
+
+	if size4 < minSize {
+		minSize = size4
+		qe = qe4
+	} else if size4 == minSize {
+		if qe4 < qe {
+			qe = qe4
+		}
+	}
+	return minSize,qe
 }
 
 func getSmallestSet(set1,set2,set3 []int) (size int,qe int64) {
@@ -315,10 +352,61 @@ func getMinQEFromValidCombos(combinations [][]int) int64 {
 					smallestSetSize = size
 					minQE = qe
 					fmt.Println("Min QE:", minQE)
+					fmt.Println("Smallest Set Size:", smallestSetSize)
 				} else if size == smallestSetSize {
 					if minQE == -1 || qe < minQE {
 						minQE = qe
 						fmt.Println("Min QE:", minQE)
+					}
+				}
+			}
+		}
+	}
+
+	return minQE
+}
+
+func getMinQEFromValidCombosPartTwo(combinations [][]int) int64 {
+
+	var minQE int64 = -1
+	smallestSetSize := 28
+
+	for i:=0; i<len(combinations);i++ {
+		set1 := combinations[i]
+
+		combinations2 := combinations[i+1:]
+		for j:=0; j<len(combinations2); j++ {
+			set2 := combinations2[j]
+			if  doCombinationsOverlap(set1,set2){
+				continue
+			}
+
+			combinations3 := combinations2[j+1:]
+			for k:=0;k<len(combinations3); k++ {
+				set3 := combinations3[k]
+				if  doCombinationsOverlap(set1,set3) || doCombinationsOverlap(set2, set3) {
+					continue
+				}
+
+				combinations4 := combinations3[k+1:]
+				for l:=0;l<len(combinations4);l++ {
+					set4 := combinations4[l]
+					if doCombinationsOverlap(set1,set4) || doCombinationsOverlap(set2,set4) || doCombinationsOverlap(set3,set4) {
+						continue
+					}
+
+					size,qe := getSmallestSetPartTwo(set1,set2,set3,set4)
+
+					if size < smallestSetSize {
+						smallestSetSize = size
+						minQE = qe
+						fmt.Println("Min QE:", minQE)
+						fmt.Println("Smallest Set Size:", smallestSetSize)
+					} else if size == smallestSetSize {
+						if minQE == -1 || qe < minQE {
+							minQE = qe
+							fmt.Println("Min QE:", minQE)
+						}
 					}
 				}
 			}
@@ -396,6 +484,56 @@ func DayTwentyFourPartOne() {
 
 	fmt.Println("Getting minimun QE")
 	minQE := getMinQEFromValidCombos(validCombos)
+	fmt.Println("Min QE:", minQE)
+	fmt.Println("Finished")
+}
+
+
+func DayTwentyFourPartTwo() {
+
+	fmt.Println("Day 24 - Part Two")
+
+	input := strings.Split(ReadFile("day24-input.txt"),"\n")
+
+	boxes := make([]int, len(input))
+
+	for i:=0; i<len(input); i++ {
+
+		value,err := strconv.Atoi(input[i])
+
+		if err != nil {
+			fmt.Println(err)
+		}
+		boxes[i] = value
+	}
+
+	fmt.Println(boxes)
+	fmt.Println("Number of boxes:", len(boxes))
+	totalWeight := 0
+
+	for i :=0; i <len(boxes); i++ {
+		totalWeight += boxes[i]
+	}
+
+	fmt.Println("total Weight:", totalWeight)
+
+	combinationTarget := totalWeight / 4
+	fmt.Println("Combination target:", combinationTarget)
+
+	var emptyCombo =[]int {}
+
+	fmt.Println("Generating combinations")
+	buildBoxCombinationsToWardsTarget(emptyCombo,boxes,0,combinationTarget)
+	fmt.Println("Combination generatation done")
+	validCombos := make([][]int,len(validComboMap))
+	pos := 0
+	for _,combo := range validComboMap {
+		validCombos[pos] = combo
+		pos++
+	}
+
+	fmt.Println("Getting minimun QE")
+	minQE := getMinQEFromValidCombosPartTwo(validCombos)
 	fmt.Println("Min QE:", minQE)
 	fmt.Println("Finished")
 }
